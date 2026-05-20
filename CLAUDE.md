@@ -40,13 +40,13 @@ src/
 
 ## Critical Rules
 
-| Rule | Why |
-|---|---|
-| Never hand-edit `src/routeTree.gen.ts` | Regenerated on every route change; edits are overwritten |
-| Never add duplicate Vite plugins | `@lovable.dev/vite-tanstack-config` already includes React, Tailwind, Cloudflare, tsconfig paths, TanStack Start — duplicates break the build |
-| Use TanStack Router `<Link>` for navigation | Do **not** use React Router v6 (`BrowserRouter`, `Routes`, `Route`, `Outlet` from `react-router-dom`) |
-| Never import `server-only` | Use TanStack Start server-only conventions (`*.server.ts`) instead |
-| Never invent official details | Contact numbers, emails, Messenger URLs, hours, faculty names must stay as explicit placeholders until the user provides real values |
+| Rule                                        | Why                                                                                                                                           |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Never hand-edit `src/routeTree.gen.ts`      | Regenerated on every route change; edits are overwritten                                                                                      |
+| Never add duplicate Vite plugins            | `@lovable.dev/vite-tanstack-config` already includes React, Tailwind, Cloudflare, tsconfig paths, TanStack Start — duplicates break the build |
+| Use TanStack Router `<Link>` for navigation | Do **not** use React Router v6 (`BrowserRouter`, `Routes`, `Route`, `Outlet` from `react-router-dom`)                                         |
+| Never import `server-only`                  | Use TanStack Start server-only conventions (`*.server.ts`) instead                                                                            |
+| Never invent official details               | Contact numbers, emails, Messenger URLs, hours, faculty names must stay as explicit placeholders until the user provides real values          |
 
 ## Coding Style
 

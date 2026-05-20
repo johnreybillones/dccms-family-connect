@@ -42,13 +42,13 @@ src/
 
 ## Critical Rules
 
-| Rule | Why |
-|---|---|
-| Never hand-edit `src/routeTree.gen.ts` | Route generation overwrites manual edits |
-| Never add duplicate Vite plugins | `@lovable.dev/vite-tanstack-config` already includes React, Tailwind, Cloudflare, tsconfig paths, TanStack Start, and related wiring; duplicates break the build |
-| Use TanStack Router APIs only | Do not introduce React Router patterns such as `BrowserRouter`, `Routes`, `Route`, or `react-router-dom` navigation |
-| Never import `server-only` | Use TanStack Start server-only conventions such as `*.server.ts` |
-| Never invent official details | Contact info, Messenger URLs, hours, faculty names, and similar org details must stay placeholders until the user provides real values |
+| Rule                                   | Why                                                                                                                                                              |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Never hand-edit `src/routeTree.gen.ts` | Route generation overwrites manual edits                                                                                                                         |
+| Never add duplicate Vite plugins       | `@lovable.dev/vite-tanstack-config` already includes React, Tailwind, Cloudflare, tsconfig paths, TanStack Start, and related wiring; duplicates break the build |
+| Use TanStack Router APIs only          | Do not introduce React Router patterns such as `BrowserRouter`, `Routes`, `Route`, or `react-router-dom` navigation                                              |
+| Never import `server-only`             | Use TanStack Start server-only conventions such as `*.server.ts`                                                                                                 |
+| Never invent official details          | Contact info, Messenger URLs, hours, faculty names, and similar org details must stay placeholders until the user provides real values                           |
 
 ## Coding Style
 

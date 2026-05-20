@@ -17,13 +17,20 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-sky-100 shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
-        <Link to="/" className="flex items-center gap-3" aria-label="DCCMS Home">
-          <img src={seal} alt="Barangay San Antonio de Padua I seal" className="h-12 w-12 rounded-full" width={48} height={48} />
+        <Link to="/" className="flex items-center gap-3" aria-label="Day Care Center Home">
+          <img
+            src={seal}
+            alt="Barangay San Antonio de Padua I seal"
+            className="h-12 w-12 rounded-full"
+            width={48}
+            height={48}
+          />
           <div className="leading-tight">
-            <div className="font-display text-xl sm:text-2xl text-brand font-bold">DCCMS</div>
+            <div className="font-display text-xl sm:text-2xl text-brand font-bold">
+              Day Care Center
+            </div>
             <div className="text-[10px] sm:text-xs">
-              <span className="text-brand font-semibold">Day Care Center</span>{" "}
-              <span className="text-accent-red font-semibold">Management System</span>
+              <span className="text-brand font-semibold">Brgy. San Antonio de Padua I</span>
             </div>
           </div>
         </Link>
@@ -47,7 +54,7 @@ export function Navbar() {
             to="/login"
             className="bg-brand hover:bg-brand/90 text-white font-display text-lg px-7 py-2.5 rounded-2xl shadow-md transition-colors"
           >
-            Login
+            Staff Login
           </Link>
         </nav>
 
@@ -62,7 +69,10 @@ export function Navbar() {
       </div>
 
       {open && (
-        <nav className="md:hidden border-t border-sky-100 bg-white px-4 py-4 flex flex-col gap-2" aria-label="Mobile">
+        <nav
+          className="md:hidden border-t border-sky-100 bg-white px-4 py-4 flex flex-col gap-2"
+          aria-label="Mobile"
+        >
           {links.map((l) => {
             const active = pathname === l.to;
             return (
@@ -83,7 +93,7 @@ export function Navbar() {
             onClick={() => setOpen(false)}
             className="mt-2 bg-brand text-white font-display text-lg px-6 py-3 rounded-2xl text-center shadow"
           >
-            Login
+            Staff Login
           </Link>
         </nav>
       )}

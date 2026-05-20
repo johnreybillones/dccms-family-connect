@@ -1,4 +1,10 @@
-export function CloudDivider({ flip = false, color = "white" }: { flip?: boolean; color?: string }) {
+export function CloudDivider({
+  flip = false,
+  color = "white",
+}: {
+  flip?: boolean;
+  color?: string;
+}) {
   return (
     <svg
       viewBox="0 0 1440 80"
