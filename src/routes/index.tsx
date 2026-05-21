@@ -51,7 +51,7 @@ function Index() {
   return (
     <PublicLayout>
       {/* ── Hero ── */}
-      <section className="relative bg-sky overflow-hidden">
+      <section className="relative overflow-hidden">
         <img
           src={hero}
           alt="Children playing happily at the Day Care Center"
@@ -128,7 +128,7 @@ function Index() {
 
       {/* ── About Our Day Care Center ── */}
       <FadeInWhenVisible>
-        <section className="bg-gradient-to-b from-sky-50 to-sky-100 py-16 sm:py-20 relative">
+        <section className="py-16 sm:py-20 relative">
           <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-2 gap-10 items-center">
             <div className="text-slate-800">
               {/* Eyebrow label */}
@@ -171,7 +171,7 @@ function Index() {
 
       {/* ── Our Programs ── */}
       <FadeInWhenVisible>
-        <section className="bg-gradient-to-b from-sky-100 to-sky-50 pb-20 relative">
+        <section className="pb-20 relative">
           <div className="mx-auto max-w-7xl px-6">
             <div className="text-center mb-12">
               <p className="text-xs font-bold uppercase tracking-widest text-brand mb-2">

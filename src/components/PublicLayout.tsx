@@ -3,69 +3,12 @@ import { useLocation } from "@tanstack/react-router";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 
-/** Scattered doodle SVG pattern used as the sitewide background. */
-function DoodleBackground() {
+function MeshGradientBackground() {
   return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden select-none"
-      style={{ opacity: 0.055 }}
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="100%"
-        height="100%"
-        style={{ position: "absolute", inset: 0 }}
-      >
-        <defs>
-          <pattern
-            id="doodle-pattern"
-            x="0"
-            y="0"
-            width="220"
-            height="220"
-            patternUnits="userSpaceOnUse"
-          >
-            {/* Star */}
-            <text x="14" y="34" fontSize="28" fill="#0369a1">
-              ★
-            </text>
-            {/* Book */}
-            <text x="110" y="28" fontSize="22" fill="#0e7490">
-              📚
-            </text>
-            {/* Heart */}
-            <text x="60" y="90" fontSize="24" fill="#e11d48">
-              ♥
-            </text>
-            {/* Cloud */}
-            <text x="150" y="95" fontSize="26" fill="#0284c7">
-              ☁
-            </text>
-            {/* Crayon scribble (arc) */}
-            <path
-              d="M 10 140 Q 40 115 70 140 Q 100 165 130 140"
-              stroke="#f59e0b"
-              strokeWidth="3"
-              fill="none"
-              strokeLinecap="round"
-            />
-            {/* Sun */}
-            <text x="155" y="160" fontSize="22" fill="#f59e0b">
-              ☀
-            </text>
-            {/* Small star */}
-            <text x="30" y="185" fontSize="16" fill="#7c3aed">
-              ✦
-            </text>
-            {/* Pencil */}
-            <text x="95" y="198" fontSize="20" fill="#059669">
-              ✏
-            </text>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#doodle-pattern)" />
-      </svg>
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1] bg-slate-50">
+      <div className="absolute -top-24 -left-24 w-[30rem] h-[30rem] bg-blue-300 rounded-full mix-blend-multiply filter blur-[100px] opacity-65 animate-blob"></div>
+      <div className="absolute top-12 -right-24 w-[30rem] h-[30rem] bg-purple-300 rounded-full mix-blend-multiply filter blur-[100px] opacity-65 animate-blob animation-delay-2000"></div>
+      <div className="absolute -bottom-24 left-1/4 w-[30rem] h-[30rem] bg-orange-200 rounded-full mix-blend-multiply filter blur-[100px] opacity-65 animate-blob animation-delay-4000"></div>
     </div>
   );
 }
@@ -75,8 +18,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const shouldReduce = useReducedMotion();
 
   return (
-    <div className="min-h-screen flex flex-col bg-white relative">
-      <DoodleBackground />
+    <div className="min-h-screen flex flex-col relative">
+      <MeshGradientBackground />
       <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-1">

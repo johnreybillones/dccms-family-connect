@@ -92,7 +92,7 @@ function AnnouncementsPage() {
 
   return (
     <PublicLayout>
-      <section className="relative bg-gradient-to-b from-sky-100 to-sky-50 py-12 sm:py-20 overflow-hidden">
+      <section className="relative py-12 sm:py-20 overflow-hidden">
         <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-brand-dark mb-6">
@@ -121,7 +121,7 @@ function AnnouncementsPage() {
         </div>
       </section>
 
-      <section className="bg-gradient-to-b from-sky-50 to-sky-100/30 py-12">
+      <section className="py-12">
         <div className="mx-auto max-w-7xl px-6">
           {/* Category Tabs */}
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10">

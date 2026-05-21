@@ -114,7 +114,7 @@ function AboutPage() {
   return (
     <PublicLayout>
       {/* ── Hero banner ── */}
-      <section className="bg-gradient-to-b from-sky-100 to-sky-50 py-16 sm:py-20 text-center">
+      <section className="py-16 sm:py-20 text-center">
         <div className="mx-auto max-w-3xl px-6">
           <p className="text-xs font-bold uppercase tracking-widest text-brand mb-3">
             Get to Know Us
@@ -128,7 +128,7 @@ function AboutPage() {
 
       {/* ── Who We Are — image + text side by side ── */}
       <FadeInWhenVisible>
-        <section className="bg-sky-50 py-16 sm:py-20">
+        <section className="py-16 sm:py-20">
           <div className="mx-auto max-w-6xl px-6 grid md:grid-cols-2 gap-12 items-center">
             <div className="rounded-[10px_60px_10px_60px] overflow-hidden shadow-clay-card border-8 border-white">
               <img
@@ -156,7 +156,7 @@ function AboutPage() {
 
       {/* ── Mission & Vision — two cards side by side ── */}
       <FadeInWhenVisible>
-        <section className="bg-gradient-to-b from-sky-50 to-white py-16">
+        <section className="py-16">
           <div className="mx-auto max-w-6xl px-6">
             <div className="text-center mb-10">
               <SectionLabel>Our Purpose</SectionLabel>
@@ -192,7 +192,7 @@ function AboutPage() {
 
       {/* ── Our Values — icon grid ── */}
       <FadeInWhenVisible>
-        <section className="bg-white py-16">
+        <section className="py-16">
           <div className="mx-auto max-w-6xl px-6">
             <div className="text-center mb-10">
               <SectionLabel>What We Stand For</SectionLabel>
@@ -225,7 +225,7 @@ function AboutPage() {
 
       {/* ── Our Programs — icon list ── */}
       <FadeInWhenVisible>
-        <section className="bg-sky-50 py-16">
+        <section className="py-16">
           <div className="mx-auto max-w-5xl px-6">
             <div className="text-center mb-10">
               <SectionLabel>What We Offer</SectionLabel>

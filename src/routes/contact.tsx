@@ -86,7 +86,7 @@ function ContactPage() {
       <Toaster richColors position="top-center" />
 
       {/* Page Header */}
-      <section className="bg-gradient-to-b from-sky-100 to-sky-50 py-12 sm:py-16 text-center">
+      <section className="py-12 sm:py-16 text-center">
         <div className="mx-auto max-w-3xl px-6">
           <p className="text-xs font-bold uppercase tracking-widest text-brand mb-3">
             Get in Touch
@@ -103,7 +103,7 @@ function ContactPage() {
       </section>
 
       {/* Main Content Section */}
-      <section className="bg-gradient-to-b from-sky-50 to-sky-100/30 pb-20">
+      <section className="pb-20">
         <div className="mx-auto max-w-6xl px-6 pt-10 grid lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Contact Details */}
           <FadeInWhenVisible className="lg:col-span-5 space-y-6">
