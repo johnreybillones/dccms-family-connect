@@ -20,17 +20,23 @@ function Card({
   title,
   children,
   color = "bg-white",
+  titleColor = "text-brand-dark",
+  textColor = "text-slate-700",
 }: {
   title: string;
   children: React.ReactNode;
   color?: string;
+  titleColor?: string;
+  textColor?: string;
 }) {
   return (
-    <div className={`${color} rounded-3xl shadow-xl p-6 sm:p-8`}>
-      <h2 className="font-display text-2xl sm:text-3xl font-bold text-brand mb-3 text-center">
+    <div
+      className={`${color} rounded-3xl shadow-xl p-6 sm:p-8 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300`}
+    >
+      <h2 className={`font-display text-2xl sm:text-3xl font-bold ${titleColor} mb-3 text-center`}>
         {title}
       </h2>
-      <div className="text-foreground text-base leading-relaxed">{children}</div>
+      <div className={`${textColor} text-base leading-relaxed`}>{children}</div>
     </div>
   );
 }
@@ -38,19 +44,24 @@ function Card({
 function AboutPage() {
   return (
     <PublicLayout>
-      <section className="bg-sky py-12 sm:py-16">
-        <div className="mx-auto max-w-3xl px-6 text-center">
-          <h1 className="font-display text-4xl sm:text-6xl font-bold text-white drop-shadow-md">
+      <section className="bg-gradient-to-b from-sky-100 to-sky-50 py-12 sm:py-16 text-center">
+        <div className="mx-auto max-w-3xl px-6">
+          <h1 className="font-display text-4xl sm:text-6xl font-bold text-brand-dark">
             About Our Day Care Center
           </h1>
         </div>
       </section>
 
-      <section className="bg-sky pb-20">
+      <section className="bg-gradient-to-b from-sky-50 to-sky-100/30 pb-20">
         <div className="mx-auto max-w-5xl px-6 space-y-10">
           {/* Who We Are */}
-          <Card title="Who We Are" color="bg-amber-300/90">
-            <p className="mb-4">
+          <Card
+            title="Who We Are"
+            color="bg-amber-50 border border-amber-200"
+            titleColor="text-amber-950"
+            textColor="text-amber-900"
+          >
+            <p className="mb-6">
               The Day Care Center of Barangay San Antonio de Padua I is a community-supported early
               childhood education center serving the children and families of our barangay. We are
               committed to providing a safe, engaging, and developmentally appropriate environment
@@ -59,7 +70,7 @@ function AboutPage() {
             <img
               src={aboutClass}
               alt="Children at the Day Care Center"
-              className="rounded-2xl w-full"
+              className="rounded-2xl w-full shadow-lg"
               loading="lazy"
               width={1024}
               height={768}
@@ -131,16 +142,23 @@ function AboutPage() {
 
           {/* Meet Our Team */}
           <Card title="Meet Our Team">
-            <p className="mb-6">Our dedicated daycare personnel are the heart of the center.</p>
-            <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+            <p className="mb-6 text-center text-slate-500">
+              Our dedicated daycare personnel are the heart of the center.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               {/* Personnel Card — Ms. Cherry */}
-              <div className="bg-sky/10 rounded-2xl p-5 flex flex-col items-center text-center w-full sm:max-w-xs">
-                <div className="h-24 w-24 rounded-full bg-brand/20 flex items-center justify-center mb-3 text-brand font-display text-3xl font-bold">
+              <div className="bg-sky-50 border border-sky-100 rounded-3xl p-6 flex flex-col items-center text-center w-full sm:max-w-xs shadow-sm hover:shadow-md transition-shadow">
+                <div className="h-24 w-24 rounded-full bg-brand-dark/10 flex items-center justify-center mb-4 text-brand-dark font-display text-3xl font-bold border-2 border-white shadow-inner">
                   MC
                 </div>
-                <p className="font-display text-xl font-bold text-brand">Ms. Cherry</p>
-                <p className="text-sm text-foreground/60 italic mt-1">[role placeholder]</p>
-                <p className="text-sm text-foreground/70 mt-2">[description placeholder]</p>
+                <p className="font-display text-xl font-bold text-brand-dark">Ms. Cherry</p>
+                <p className="text-xs bg-brand-dark/10 text-brand-dark px-3 py-1 rounded-full font-bold mt-1.5 uppercase tracking-wider">
+                  Lead Teacher
+                </p>
+                <p className="text-sm text-slate-600 mt-4 leading-relaxed">
+                  Dedicated to early childhood growth, parent coordination, and creating a
+                  supportive learning space for every young mind.
+                </p>
               </div>
             </div>
           </Card>
