@@ -59,10 +59,10 @@ function Index() {
           width={1536}
           height={896}
         />
-        <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-32 sm:pt-24 sm:pb-44 flex items-center min-h-[85vh]">
+        <div className="relative mx-auto max-w-7xl px-6 pt-12 pb-24 sm:pt-16 sm:pb-28 flex items-center min-h-[75vh]">
           <div className="max-w-xl bg-white/95 backdrop-blur-md rounded-[40px] p-8 sm:p-12 shadow-clay-card border border-white/50">
             <motion.h1
-              className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-brand-dark"
+              className="font-display text-3xl sm:text-4xl lg:text-5xl font-black leading-tight text-brand-dark"
               initial={{ opacity: 0, y: shouldReduce ? 0 : 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: "easeOut", delay: 0 }}
