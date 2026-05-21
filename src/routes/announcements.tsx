@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
+import { FadeInWhenVisible, StaggerChildren, StaggerItem } from "@/components/motion";
 import kid from "@/assets/announcement-kid.jpg";
 import attendanceImg from "@/assets/feature-attendance.jpg";
-import recordsImg from "@/assets/feature-records.jpg";
-import reportsImg from "@/assets/feature-reports.jpg";
+import aboutImg from "@/assets/about-class.jpg";
 import rainbowImg from "@/assets/sky-rainbow.jpg";
 
 export const Route = createFileRoute("/announcements")({
@@ -37,7 +37,7 @@ const SAMPLE: Announcement[] = [
     date: "April 20, 2026",
     title: "Enrollment Reminder for SY 2026–2027",
     body: "Enrollment for the upcoming school year is now open. Please visit the Day Care Center or contact us for requirements and schedules.",
-    img: recordsImg,
+    img: aboutImg,
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const SAMPLE: Announcement[] = [
     date: "May 10, 2026",
     title: "Child Weight Monitoring Schedule",
     body: "Monthly weight check for all enrolled children will be conducted this week. Please ensure your child attends and bring their health booklet.",
-    img: reportsImg,
+    img: kid,
   },
   {
     id: 2,
@@ -98,7 +98,7 @@ function AnnouncementsPage() {
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-brand-dark mb-6">
               Announcements
             </h1>
-            <div className="bg-amber-50 border border-amber-200 rounded-3xl shadow-xl p-6 sm:p-8 text-amber-900 max-w-md">
+            <div className="bg-amber-50 border border-amber-200 rounded-[30px_10px_30px_10px] shadow-clay-card p-6 sm:p-8 text-amber-900 max-w-md">
               <h2 className="font-display text-2xl sm:text-3xl font-bold mb-3 text-amber-950">
                 Stay updated!
               </h2>
@@ -108,7 +108,7 @@ function AnnouncementsPage() {
               </p>
             </div>
           </div>
-          <div className="rounded-[40%_60%_40%_60%/60%_40%_60%_40%] overflow-hidden aspect-square max-w-md mx-auto shadow-2xl">
+          <div className="rounded-[40%_60%_40%_60%/60%_40%_60%_40%] overflow-hidden aspect-square max-w-md mx-auto shadow-clay-card border-8 border-white">
             <img
               src={kid}
               alt="Happy child at the Day Care Center"
@@ -178,37 +178,36 @@ function AnnouncementsPage() {
           )}
 
           {state === "ready" && filteredItems.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <StaggerChildren className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredItems.map((a) => (
-                <article
-                  key={`${a.id}-${activeCategory}`}
-                  className="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 animate-[fade-in_0.4s_ease-out_forwards]"
-                >
-                  <img
-                    src={a.img}
-                    alt=""
-                    className="w-full h-48 object-cover"
-                    loading="lazy"
-                    width={768}
-                    height={512}
-                  />
-                  <div className="p-5 flex-1 flex flex-col">
-                    <div className="flex items-center gap-2 text-xs mb-2">
-                      <span
-                        className={`${TAG_COLORS[a.tag] ?? "bg-brand"} text-white px-2.5 py-1 rounded-full font-bold`}
-                      >
-                        {a.tag}
-                      </span>
-                      <span className="text-slate-600 font-semibold">{a.date}</span>
+                <StaggerItem key={`${a.id}-${activeCategory}`}>
+                  <article className="bg-white rounded-[40px_10px_40px_10px] shadow-clay-card flex flex-col hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 border border-sky-100 h-full">
+                    <img
+                      src={a.img}
+                      alt=""
+                      className="w-full h-48 object-cover rounded-[40px_10px_0px_0px]"
+                      loading="lazy"
+                      width={768}
+                      height={512}
+                    />
+                    <div className="p-5 flex-1 flex flex-col">
+                      <div className="flex items-center gap-2 text-xs mb-2">
+                        <span
+                          className={`${TAG_COLORS[a.tag] ?? "bg-brand"} text-white px-2.5 py-1 rounded-full font-bold`}
+                        >
+                          {a.tag}
+                        </span>
+                        <span className="text-slate-600 font-semibold">{a.date}</span>
+                      </div>
+                      <h3 className="font-display text-xl text-brand-dark font-bold mb-2">
+                        {a.title}
+                      </h3>
+                      <p className="text-sm text-slate-700 leading-relaxed flex-1">{a.body}</p>
                     </div>
-                    <h3 className="font-display text-xl text-brand-dark font-bold mb-2">
-                      {a.title}
-                    </h3>
-                    <p className="text-sm text-slate-700 leading-relaxed flex-1">{a.body}</p>
-                  </div>
-                </article>
+                  </article>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerChildren>
           )}
         </div>
       </section>

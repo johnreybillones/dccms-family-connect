@@ -122,7 +122,7 @@ function LoginPage() {
           <button
             type="submit"
             disabled={status === "loading"}
-            className="w-full bg-accent-red hover:bg-accent-red/90 text-white font-display text-lg px-6 py-3 rounded-2xl shadow transition-colors disabled:opacity-70 inline-flex items-center justify-center gap-2"
+            className="w-full bg-brand-dark hover:bg-brand-dark/90 text-white font-display text-lg px-6 py-3 rounded-2xl shadow transition-colors disabled:opacity-70 inline-flex items-center justify-center gap-2"
           >
             {status === "loading" && <Loader2 size={18} className="animate-spin" />}
             Login

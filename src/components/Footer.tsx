@@ -8,8 +8,8 @@ const linkCls = "text-sm text-foreground/70 hover:text-brand transition-colors";
 
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-sky-100 mt-0">
-      <div className="mx-auto max-w-7xl px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <footer className="bg-sky-50/50 border-t border-sky-100 mt-0 rounded-t-[40px] sm:rounded-t-[80px]">
+      <div className="mx-auto max-w-7xl px-6 py-12 md:py-16 grid grid-cols-2 md:grid-cols-4 gap-8">
         <div>
           <img
             src={seal}

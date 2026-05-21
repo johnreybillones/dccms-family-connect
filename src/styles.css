@@ -68,8 +68,26 @@
   --color-brand-dark: var(--brand-dark);
   --color-accent-red: var(--accent-red);
   --color-sky: var(--sky);
-}
 
+  /* Claymorphism & Tactile Variables */
+  --shadow-clay: 0 8px 0 oklch(0.35 0.13 230), inset 0 4px 0 rgba(255, 255, 255, 0.3);
+  --shadow-clay-active: 0 0px 0 oklch(0.35 0.13 230), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  --shadow-clay-red: 0 8px 0 oklch(0.4 0.22 27), inset 0 4px 0 rgba(255, 255, 255, 0.3);
+  --shadow-clay-red-active: 0 0px 0 oklch(0.4 0.22 27), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  --shadow-clay-card: 0 12px 40px -10px rgba(0, 0, 0, 0.1), inset 0 4px 0 rgba(255, 255, 255, 0.7);
+
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+}
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
