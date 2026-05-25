@@ -2,136 +2,131 @@
 
 ## Purpose
 
-This roadmap aligns project direction with `docs/paper/DayCareCenter_SIPP.md`, which is the
-requirements authority for `management-system` work. It distinguishes what already exists in this
-repo, what is approved for the first protected release, what remains deferred, and what is out of
-scope.
+This roadmap aligns repo scope with `docs/paper/DayCareCenter_SIPP.md`, which is the product
+requirements authority for `management-system` work. It distinguishes the already-shipped public
+site from the committed V1 protected management release and the features that remain deferred.
 
 ## Source Priority
 
 1. `docs/paper/DayCareCenter_SIPP.md`
 2. Approved implementation specs under `docs/superpowers/specs/`
-3. Existing repo docs such as `docs/PROJECT_CONTEXT.md` and `docs/website_specifications.md`
+3. Repo product docs such as `docs/PROJECT_CONTEXT.md` and `docs/website_specifications.md`
 
-If these sources conflict, the SIPP and approved implementation specs take precedence for this
-roadmap.
+If these sources conflict, the SIPP and approved implementation specs take precedence for roadmap
+decisions.
 
-## Current Public Website
+## Release Structure
 
-These pages are already part of the public-facing site and remain public in the protected-staff
-roadmap:
+### Release 0: Public Information Site
 
-| Page | Route | Current Role | V1 Status |
+The existing public-facing pages remain part of this repository and remain publicly accessible.
+
+| Page | Route | Purpose | Status in Expanded V1 |
 | --- | --- | --- | --- |
-| Home | `/` | Introduces the daycare center and links staff to the login entry point | Keep |
-| About | `/about` | Explains the center, mission, values, and public context | Keep |
-| Announcements | `/announcements` | Parent-facing updates and notices | Keep as sample-driven in v1 |
-| Contact | `/contact` | Public location and placeholder contact details | Keep |
-| Staff Login | `/login` | Current prototype login entry point | Replace prototype with real authentication in v1 |
+| Home | `/` | Introduces the daycare center and provides a staff login entry point | Keep public |
+| About | `/about` | Explains the daycare center, mission, values, and context | Keep public |
+| Announcements | `/announcements` | Parent-facing updates and notices | Keep public and sample-driven |
+| Contact | `/contact` | Public location and contact placeholders | Keep public |
+| Login | `/login` | Entry point into the protected staff experience | Upgrade to real authentication |
 
-### Public Content Notes
+Public-site notes:
 
-- `/announcements` remains sample-driven in v1. It should continue to show placeholder/sample
-  announcement content until a later staff-managed announcements feature is approved.
-- Public pages must continue to avoid invented official details such as contact numbers, office
-  hours, and Messenger URLs until the client provides them.
-- The public website is not part of the installed offline staff PWA shell. Public pages remain
-  regular web pages.
+- Public announcements remain sample-driven in V1. Staff authoring for announcements is deferred.
+- Public pages must not invent official details such as contact numbers, office hours, Messenger
+  links, or staff names until the client supplies them.
+- The public website does not become part of the installed offline staff app shell.
 
-## Protected Staff V1
+### Release 1: Protected Management App
 
-Release 1 is the first real protected management release inside this repository. It covers the
-minimum SIPP-aligned operational workflow needed for authorized daycare staff to maintain records,
-track attendance, and prepare exportable reports even with unstable connectivity.
+Release 1 is now the committed first protected DCCMS management release in this repository. It is
+not a placeholder or prototype scope. It includes Student Records, Attendance, Reports, offline
+sync, and role-based access as approved V1 features.
 
-### Approved V1 Pages
-
-| Page | Route | Purpose |
+| Area | Routes | V1 Commitment |
 | --- | --- | --- |
-| Staff Login | `/login` | Authenticate authorized personnel |
-| Staff Home | `/staff` | Provide a simple protected landing page with the primary staff actions |
-| Student Records List | `/staff/students` | Find and open student enrollment records |
-| New Student Record | `/staff/students/new` | Create an enrollment profile with the approved fields only |
-| Student Record View | `/staff/students/$profileId` | Read-only view of one record |
-| Student Record Edit | `/staff/students/$profileId/edit` | Update an existing record |
-| Attendance List | `/staff/attendance` | Review attendance entries by date and student |
-| New Attendance Entry | `/staff/attendance/new` | Record daily attendance |
-| Attendance Edit | `/staff/attendance/$entryId/edit` | Update an attendance entry |
-| Reports | `/staff/reports` | Generate and export the approved reports in `PDF` and `XLSX` |
+| Authentication | `/login` | Real staff login with protected session handling |
+| Staff Home | `/staff` | Protected landing page for staff workflows |
+| Student Records | `/staff/students`, `/staff/students/new`, `/staff/students/$profileId`, `/staff/students/$profileId/edit` | Create, find, view, and update enrollment records |
+| Attendance | `/staff/attendance`, `/staff/attendance/new`, `/staff/attendance/$entryId/edit` | Create, filter, view, and update daily attendance |
+| Reports | `/staff/reports` | Generate and export Student Masterlist, Attendance Register / Summary, and Accomplishment Summary in `PDF` and `XLSX` |
+| Offline Device Workflow | protected staff flow | One activated daycare-controlled device, local-first saves, and automatic sync when online |
+| Access Control | protected staff flow | `administrator` and `staff` roles with separate responsibilities |
 
-### Approved V1 Behavior
+### Committed V1 Behavior
 
-- Protected access for authorized daycare personnel with `administrator` and `staff` roles
-- One deployment-provisioned administrator account plus staff accounts managed by the administrator
-- Mobile-first installed PWA behavior starts at `/login`, with desktop as a supplemental layout
-- Offline-capable student records, attendance, and report export on one activated
-  daycare-controlled device
-- Local-first save flow with automatic synchronization when connectivity returns
-- Student-record actions limited to create, find, view, and update
-- Attendance actions limited to create, filter, view, and update
-- Report generation for:
-  - Student Masterlist
-  - Attendance Register / Summary
-  - Accomplishment Summary
-- Report export formats limited to `PDF` and `XLSX`
-- The installed/offline app experience covers the staff login, activation, unlock, and protected
-  staff pages only; it does not include the public website pages
+- Protected access for authorized daycare personnel only
+- Two committed roles:
+  - `administrator` manages staff accounts, device activation/deactivation, export oversight, and
+    audit visibility
+  - `staff` manages approved student-record, attendance, and report-export workflows
+- Mobile-first protected experience with desktop support
+- One approved activated daycare-controlled device may hold encrypted local data for offline use
+- Online and offline staff actions save locally first and synchronize automatically when
+  connectivity returns
+- Student-record actions are limited to create, find, view, and update
+- Attendance actions are limited to create, filter, view, and update
+- Reports are generated from the unlocked local replica and exported in `PDF` and `XLSX`
+- Public pages remain public and continue to coexist with the protected staff app in this repo
 
-### Why This V1 Boundary
+### Why This Is The V1 Boundary
 
-The SIPP identifies paper-based student records, slow retrieval, unstable connectivity, delayed
-reporting, and the need for role-based protection as the main operational bottlenecks. Release 1
-therefore includes the smallest coherent private workflow that addresses those bottlenecks without
-claiming the entire future management system is complete.
+The SIPP identifies paper-based records, slow retrieval, unstable connectivity, insecure storage,
+and manual reporting as the main operational problems. Release 1 therefore includes the smallest
+complete protected workflow that directly addresses those problems:
+
+- authenticated staff access
+- student-record management
+- attendance management
+- report export
+- offline-first operation with automatic synchronization
 
 ## Deferred Areas
 
-These areas remain planned but are not part of Release 1. They must not be presented as partially
-working or production-ready during v1 implementation.
+These items are still acknowledged by the SIPP or earlier project materials, but they are not part
+of the committed V1 release. They must not be presented as already available.
 
-| Area | Why Deferred | Key Dependency |
+| Area | V1 Decision | Reason |
 | --- | --- | --- |
-| Activities / Child Development | The SIPP mentions curriculum and developmental tracking, but this is separate from the initial records/attendance/reporting workflow | Stable protected shell and profile model |
-| Health Records | The SIPP references health-related data, but v1 stays with enrollment records plus attendance only | Stable profile model and approved health-data schema |
-| Staff Announcement Management | Public announcements stay sample-driven in v1; authoring tools are deferred | Staff auth and approved content workflow |
-| Reminders / Notifications | The SIPP mentions reminders, but scheduling and delivery behavior are not yet specified | Staff auth, records foundation, future delivery design |
+| Health Records | Deferred | V1 keeps the record model focused on approved enrollment fields plus attendance |
+| Activities / Child Development | Deferred | Separate workflow not required for the first operational release |
+| Staff Announcement Management | Deferred | Public announcements stay sample-driven in V1 |
+| Reminders / Notifications | Deferred | Mentioned in source materials but not required for the first protected workflow |
+| Parent Messaging / Chat | Deferred and out of current release scope | Not part of the approved protected V1 implementation |
 
-### Deferred Release Principle
+Deferred release rule:
 
-No deferred area should appear editable, production-ready, or implicitly complete in v1. If shown
-in the staff experience at all, it must be clearly labeled as unavailable.
+- Deferred modules may be mentioned in roadmap language, but they must be clearly labeled as not
+  available yet if referenced in product or UI docs.
 
 ## Explicit Exclusions
 
-The following items are outside the approved scope for this roadmap unless a later plan explicitly
-reintroduces them:
+The following remain out of scope unless a later approved plan expands them:
 
-- Payroll or financial management
-- Parent chat or direct teacher-parent messaging
-- A separate native mobile application
-- Biometric authentication or other advanced auth methods
-- Direct government-system integration beyond export-oriented reporting
+- payroll or financial management
+- biometric or advanced authentication beyond the approved V1 session and offline PIN model
+- a separate native mobile application
+- direct integration with government systems beyond file export
 
-## Release Boundary Summary
+## Release Summary
 
-### Release 0: Public Information Site
+### Current Public Site
 
 - Home
 - About
 - Announcements with sample data
 - Contact
-- Prototype login entry
+- Login entry point
 
-### Release 1: Protected Records, Attendance, and Reports V1
+### Expanded V1 Protected Release
 
-- Real staff login
+- Real login for staff accounts
 - Role-based access for `administrator` and `staff`
 - Protected staff home
 - Offline-capable Student Records workflow
 - Offline-capable Attendance workflow
-- Offline report generation and export in `PDF` and `XLSX`
-- One active device policy
-- Local-first sync to canonical server storage
+- Offline-capable Reports workflow with `PDF` and `XLSX` export
+- One approved-device policy
+- Local-first persistence with automatic sync to canonical server storage
 
 ### Later Releases
 
@@ -142,7 +137,7 @@ reintroduces them:
 
 ## Implementation Notes
 
-- The detailed locked decisions and shared contract summary for Release 1 live in
+- The detailed V1 product decisions and contract summary live in
   [2026-05-25 Student Records Offline PWA Design](./superpowers/specs/2026-05-25-student-records-offline-pwa-design.md).
-- This roadmap is intentionally product-facing. It describes approved boundaries, not technical
-  implementation details beyond what is necessary to define scope.
+- This roadmap is product-facing. It defines committed boundaries and release separation rather
+  than low-level implementation details.

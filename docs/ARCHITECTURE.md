@@ -2,101 +2,141 @@
 
 ## System Boundary
 
-This repository now contains both:
+This repository contains one application with two clearly separated surfaces:
 
-- the public-facing DCCMS Family Connect website for parents, guardians, barangay officials, and
-  evaluators
-- the protected DCCMS staff application approved on the `management-system` branch for student
-  records, attendance, report export, offline sync, and role-based access
+- a public DCCMS Family Connect website for parents, guardians, barangay officials, and evaluators
+- a protected DCCMS management app for authorized daycare staff
 
-The public site and protected staff app share one codebase but remain separate at the route,
-layout, caching, and data-handling levels. Public routes stay publicly accessible. Protected staff
-routes are authenticated, role-aware, and scoped to the installable offline experience.
+The protected app is committed scope on the `management-system` branch. It includes Student
+Records, Attendance, Reports, offline synchronization, and role-based access in V1. The public
+site remains in the same repo and must continue to work alongside the protected management app.
+
+## Architectural Intent
+
+The codebase must preserve these product boundaries:
+
+- public routes stay publicly accessible and avoid sensitive data
+- protected staff routes require authenticated sessions before showing private data or actions
+- offline behavior is scoped to the staff login and protected staff experience, not the public
+  site
+- V1 private scope includes records, attendance, reports, automatic sync, and administrator/staff
+  role separation
 
 ## Current Stack
 
-The app uses TanStack Start, TanStack Router file routes, React, TypeScript, Tailwind CSS v4, and
-Vite. Vite configuration is provided by `@lovable.dev/vite-tanstack-config`; do not add the
-TanStack Start, React, Tailwind, Cloudflare, tsconfig path, or duplicate plugin setup manually.
+The app uses TanStack Start, TanStack Router file routes, React 19, TypeScript, Tailwind CSS v4,
+and Vite 7. Build wiring comes from `@lovable.dev/vite-tanstack-config`; do not manually add
+duplicate React, Tailwind, Cloudflare, TanStack Start, or tsconfig-path plugins.
 
-Cloudflare deployment support is represented by `wrangler.jsonc` and the custom server entry in
-`src/server.ts`. That server entry wraps TanStack Start's server handler and normalizes
-catastrophic SSR errors into the branded error page from `src/lib/error-page.ts`.
+Cloudflare deployment support is represented by `wrangler.jsonc` and `src/server.ts`. The server
+entry wraps TanStack Start's server handler and normalizes catastrophic SSR failures into the
+shared branded error page.
 
-Release 1 protected storage uses:
+Protected V1 data architecture uses:
 
 - Cloudflare D1 as canonical server storage
 - encrypted IndexedDB on one activated daycare-controlled device for offline operation
-- TanStack Start server routes for authentication, admin actions, bootstrap, and synchronization
+- TanStack Start server routes for authentication, admin actions, bootstrap, synchronization, and
+  protected data access
 
 ## Source Layout
 
-- `src/routes/` contains TanStack file routes for public pages and protected staff pages
+- `src/routes/` contains TanStack file routes for public pages, API routes, and protected staff
+  pages
 - `src/routes/__root.tsx` contains the shared document shell, providers, and global error UI
-- `src/components/` contains shared layout and public UI components
-- `src/components/staff/` contains protected staff-specific components
+- `src/components/` contains shared layout and public-facing UI components
+- `src/components/staff/` contains protected staff UI and workflow components
 - `src/components/ui/` contains shadcn-style reusable primitives
 - `src/features/staff/contracts/` contains shared protected-app schemas and types
-- `src/features/staff/client/` contains offline storage, sync, auth, and export helpers
+- `src/features/staff/client/` contains offline storage, activation, sync, auth, and export
+  helpers
 - `src/features/staff/server/` contains server-only protected-app modules
-- `src/assets/` contains imported images processed by Vite
-- `src/lib/` contains shared utilities and error handling helpers
+- `src/assets/` contains images imported through Vite
+- `src/lib/` contains shared utilities and error helpers
 - `src/styles.css` defines Tailwind v4 sources, theme tokens, fonts, and base styles
-- `src/routeTree.gen.ts` is generated router output and should normally not be edited
+- `src/routeTree.gen.ts` is generator-owned output and must not be hand-edited
 
 ## Routing Model
 
-Routes are declared with `createFileRoute` in `src/routes/*.tsx`. Shared document shell,
-stylesheet injection, error UI, 404 UI, and the `QueryClientProvider` live in
-`src/routes/__root.tsx`.
+Routes are declared with `createFileRoute` in `src/routes/`. Shared document shell,
+stylesheet injection, query providers, error UI, and 404 UI remain in `src/routes/__root.tsx`.
 
-Public content pages wrap their page body with `PublicLayout`. Protected pages use a dedicated
-staff shell and must enforce authentication before showing private data or actions.
+Routing is intentionally split into:
 
-Use TanStack Router's `Link` component for internal navigation. Do not introduce React Router v6
-APIs such as `BrowserRouter`, `Routes`, `Route`, or `Outlet` from `react-router-dom`.
+- public content routes such as `/`, `/about`, `/announcements`, and `/contact`
+- the shared `/login` entry route
+- protected staff routes under `/staff`
+- protected API routes under `/api`
+
+Public pages should continue to use `PublicLayout`. Protected staff pages should use a dedicated
+staff shell and gate access before rendering private data.
+
+Use TanStack Router APIs only. Do not introduce React Router patterns such as `BrowserRouter`,
+`Routes`, or `react-router-dom` navigation.
+
+## Protected V1 Domain Model
+
+Expanded V1 centers on five private concerns:
+
+- authenticated staff sessions
+- `administrator` and `staff` role enforcement
+- student enrollment records
+- daily attendance records
+- report export plus export-audit tracking
+
+Administrator responsibilities include staff account management, device lifecycle management, and
+audit visibility. Staff responsibilities include approved record, attendance, and report-export
+workflows.
 
 ## Data Flow
 
-Public pages remain mostly static and local to route files. Announcements use local sample data and
-simulated loading states.
+Public pages remain mostly static and local to route files. Announcements continue to use sample
+content until a later publishing workflow is explicitly approved.
 
-Protected staff data uses a local-first flow:
+Protected staff data follows a local-first architecture:
 
-- online authentication establishes a secure session
-- one approved device is activated for offline use
-- the client writes student records, attendance, and export audit metadata to encrypted local
-  storage first
-- the sync layer submits queued operations to server routes when connectivity returns
-- D1 remains the canonical data store for synchronized records
+1. An authorized user signs in online.
+2. An administrator-approved daycare-controlled device is activated for offline use.
+3. Each authorized user enrolls an offline PIN on that activated device after a successful online
+   login.
+4. Student-record changes, attendance changes, and export-audit events save to encrypted local
+   storage first.
+5. The sync layer automatically sends queued operations to protected server routes when
+   connectivity returns.
+6. D1 remains the canonical synchronized store.
 
-Generated report files are produced on the authorized client from the unlocked local replica so
-exports remain available offline. Personal data and generated files must not be exposed through
-service-worker caches or public asset paths.
+This flow exists to satisfy the SIPP requirement that core staff work remain usable despite weak or
+intermittent connectivity.
+
+## Reports And Export Boundaries
+
+Reports are committed V1 behavior, not a future placeholder. The protected app must support local
+generation and export of:
+
+- Student Masterlist
+- Attendance Register / Summary
+- Accomplishment Summary
+
+Exports are generated on the unlocked authorized client from the local replica so they remain
+available offline. Export audit metadata is part of the protected sync model.
+
+Report files and personal-data API responses must not be exposed through service-worker caches,
+public asset locations, or unauthenticated endpoints.
 
 ## Separation Rules
 
 - Public website pages are not part of the installed offline staff app shell
 - Protected routes must not leak personal data into public caches or unauthenticated responses
+- The staff app is role-aware and must not expose administrator-only actions to ordinary staff
 - Deferred modules such as health records, child-development tracking, reminders, and
   staff-managed announcement publishing must not be implied as complete before they are explicitly
   implemented
-- `src/routeTree.gen.ts` remains generator-owned and must not be hand-edited
+- `src/routeTree.gen.ts` remains generator-owned
 
-## Old Architecture Carryover
+## Stability Rules
 
-Still applicable from `old_docs/ARCHITECTURE.md`:
-
-- The public routes are `/`, `/about`, `/announcements`, `/contact`, and `/login`
-- The public layout uses shared navigation and footer
-- Static public content can stay local until a backend or CMS is required
-
-Not applicable anymore:
-
-- The assumption that this repo contains only the public site
-- The assumption that private management features belong in a separate app
-- React Router v6 examples and `App.tsx` route definitions
-- The old `pages/`, `components/layout/`, `components/sections/`, `services/`, and `constants/`
-  folder assumptions
-- Tailwind v3/PostCSS assumptions
-- Public assets in `public/`; current images are imported from `src/assets/`
+- Do not move protected scope out of this repository unless a later approved plan says otherwise
+- Do not reduce V1 below records, attendance, reports, offline sync, and role-based access without
+  explicit product approval
+- Do not treat public placeholders as verified official contact information until the client
+  confirms them
