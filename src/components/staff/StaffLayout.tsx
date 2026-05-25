@@ -22,14 +22,29 @@ import {
   Settings,
   ShieldCheck,
   UserCog,
+  ShieldAlert,
 } from "lucide-react";
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 
 import seal from "@/assets/seal-logo.png";
-import { logout } from "@/features/staff/client/auth-client";
-import { clearSession, useSession } from "@/features/staff/client/session-store";
+import { fetchSession, logout } from "@/features/staff/client/auth-client";
+import { clearSession, setSession, useSession } from "@/features/staff/client/session-store";
 import { LiveSyncStatus } from "@/components/staff/SyncStatus";
+import { PinGate } from "@/components/staff/PinGate";
+import { isVaultUnlocked, unlockVault, getSyncMeta } from "@/features/staff/client/offline-vault";
+import {
+  activateDevice,
+  isDeviceActivated,
+  recordActivation,
+  enrollOfflinePin,
+} from "@/features/staff/client/device-activation";
+import {
+  startNetworkMonitor,
+  bootstrapFromServer,
+  syncToServer,
+} from "@/features/staff/client/sync-client";
+import { Button } from "@/components/ui/button";
 
 // ---------------------------------------------------------------------------
 // Navigation configuration
@@ -319,12 +334,234 @@ export function StaffLayout() {
   const user = useSession();
   const isAdmin = user?.role === "administrator";
 
+  const [isAuthorizing, setIsAuthorizing] = useState(!user);
+  const [vaultUnlocked, setVaultUnlocked] = useState(isVaultUnlocked());
+  const [deviceActivated, setDeviceActivated] = useState<boolean | null>(null);
+  const [checkingActivation, setCheckingActivation] = useState(true);
+  const [enrollPinValue, setEnrollPinValue] = useState("123456");
+  const [activationError, setActivationError] = useState<string | null>(null);
+  const [isActivating, setIsActivating] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function validateSession() {
+      if (user) {
+        setIsAuthorizing(false);
+        return;
+      }
+
+      const session = await fetchSession();
+
+      if (cancelled) return;
+
+      if (!session.authenticated) {
+        clearSession();
+        navigate({ to: "/login", replace: true });
+        return;
+      }
+
+      setSession(session.details.user);
+      setIsAuthorizing(false);
+    }
+
+    void validateSession();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate, user]);
+
+  useEffect(() => {
+    if (isAuthorizing) return;
+
+    let cancelled = false;
+    async function checkState() {
+      try {
+        const active = await isDeviceActivated();
+        if (!cancelled) {
+          setDeviceActivated(active);
+        }
+      } catch (err) {
+        console.error("Failed to check device activation status", err);
+      } finally {
+        if (!cancelled) {
+          setCheckingActivation(false);
+        }
+      }
+    }
+    void checkState();
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthorizing]);
+
+  // Synchronise offline state, monitor network connectivity, and auto-bootstrap if needed.
+  useEffect(() => {
+    if (isAuthorizing || !vaultUnlocked) return;
+
+    // Start background sync on network changes
+    const stopNetworkMonitor = startNetworkMonitor();
+
+    // Auto-bootstrap check
+    async function checkAndBootstrap() {
+      try {
+        const meta = await getSyncMeta();
+        if (!meta || !meta.lastSyncedAt) {
+          // Has never synced/bootstrapped before! Let's bootstrap.
+          await bootstrapFromServer();
+        } else {
+          // Already bootstrapped, let's just trigger a sync pass
+          await syncToServer();
+        }
+      } catch (err) {
+        console.error("Background sync or bootstrap failed", err);
+      }
+    }
+
+    void checkAndBootstrap();
+
+    return () => {
+      stopNetworkMonitor();
+    };
+  }, [isAuthorizing, vaultUnlocked]);
+
+  const handleActivateDevice = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const userId = user?.id ?? "usr_preview";
+    if (enrollPinValue.length !== 6 || !/^\d+$/.test(enrollPinValue)) {
+      setActivationError("Offline PIN must be exactly 6 digits.");
+      return;
+    }
+
+    setIsActivating(true);
+    setActivationError(null);
+
+    try {
+      const activationResult = await activateDevice({
+        deviceId: "dev_device_1",
+        deviceName: "Developer Dev-Box",
+      });
+
+      if (!activationResult.ok) {
+        setActivationError(
+          activationResult.reason === "DEVICE_ALREADY_ACTIVE"
+            ? "This daycare device is already activated elsewhere."
+            : "Device activation failed. Please check your network connection and try again.",
+        );
+        return;
+      }
+
+      await recordActivation("dev_device_1", "Developer Dev-Box");
+      await enrollOfflinePin(userId, enrollPinValue);
+      const res = await unlockVault(userId, enrollPinValue);
+      if (res.ok) {
+        setDeviceActivated(true);
+        setVaultUnlocked(true);
+      } else {
+        setActivationError("Enrollment succeeded but auto-unlock failed.");
+      }
+    } catch (err) {
+      setActivationError(
+        "Device activation failed. IndexedDB or WebCrypto might not be supported.",
+      );
+    } finally {
+      setIsActivating(false);
+    }
+  };
+
   const handleSignOut = useCallback(async () => {
     await logout();
     clearSession();
     navigate({ to: "/login" });
   }, [navigate]);
 
+  if (isAuthorizing || checkingActivation) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
+        Checking secure staff session...
+      </div>
+    );
+  }
+
+  // State 1: Device is not activated yet (Needs to initialize the vault and set a PIN)
+  if (deviceActivated === false) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-4 bg-gradient-to-br from-sky/30 via-background to-brand/10">
+        <div className="w-full max-w-md bg-card rounded-3xl shadow-2xl border border-border/50 p-8 text-center space-y-6">
+          <div className="inline-flex size-14 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+            <ShieldAlert size={28} />
+          </div>
+          <div>
+            <h1 className="font-display text-2xl font-bold text-brand-dark">
+              Activate Device Vault
+            </h1>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              This browser device is not activated yet. To support offline student records, please
+              set up a 6-digit PIN to encrypt your local database.
+            </p>
+          </div>
+
+          <form onSubmit={handleActivateDevice} className="space-y-4 text-left">
+            <div>
+              <label htmlFor="dev-pin" className="block text-xs font-bold text-foreground/75 mb-1">
+                Choose a 6-Digit PIN
+              </label>
+              <input
+                id="dev-pin"
+                type="text"
+                maxLength={6}
+                pattern="\d{6}"
+                value={enrollPinValue}
+                onChange={(e) => setEnrollPinValue(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                className="w-full tracking-widest text-center text-lg font-bold border border-sky-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand bg-background"
+                placeholder="123456"
+                required
+              />
+              <p className="text-[10px] text-muted-foreground mt-1 text-center">
+                Defaulting to <span className="font-bold text-brand">123456</span> for easy
+                developer preview.
+              </p>
+            </div>
+
+            {activationError && (
+              <p className="text-xs text-accent-red text-center font-semibold" role="alert">
+                {activationError}
+              </p>
+            )}
+
+            <Button
+              type="submit"
+              disabled={isActivating}
+              className="w-full bg-brand hover:bg-brand/90 text-white py-3 rounded-2xl font-display text-sm font-bold shadow-md cursor-pointer"
+            >
+              {isActivating ? "Initializing Cryptography..." : "Activate & Unlock Vault"}
+            </Button>
+          </form>
+
+          <button
+            onClick={handleSignOut}
+            className="text-xs text-muted-foreground hover:text-accent-red underline transition-colors"
+          >
+            Sign out of this session
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // State 2: Device is activated, but the vault is locked (Needs PIN entry to unlock)
+  if (!vaultUnlocked) {
+    return (
+      <PinGate
+        userId={user?.id ?? "usr_preview"}
+        displayName={user?.displayName ?? "Teacher"}
+        onUnlocked={() => setVaultUnlocked(true)}
+      />
+    );
+  }
+
+  // State 3: Fully activated and unlocked!
   return (
     <div className="flex min-h-screen bg-background">
       {/* Desktop sidebar */}

@@ -16,9 +16,12 @@ import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StaffIndexRouteImport } from './routes/staff/index'
+import { Route as StaffReportsRouteImport } from './routes/staff/reports'
 import { Route as StaffStudentsIndexRouteImport } from './routes/staff/students/index'
+import { Route as StaffAttendanceIndexRouteImport } from './routes/staff/attendance/index'
 import { Route as StaffStudentsNewRouteImport } from './routes/staff/students/new'
 import { Route as StaffStudentsProfileIdRouteImport } from './routes/staff/students/$profileId'
+import { Route as StaffAttendanceNewRouteImport } from './routes/staff/attendance/new'
 import { Route as ApiStaffSyncRouteImport } from './routes/api/staff/sync'
 import { Route as ApiStaffBootstrapRouteImport } from './routes/api/staff/bootstrap'
 import { Route as ApiAuthSessionRouteImport } from './routes/api/auth/session'
@@ -66,9 +69,19 @@ const StaffIndexRoute = StaffIndexRouteImport.update({
   path: '/',
   getParentRoute: () => StaffRoute,
 } as any)
+const StaffReportsRoute = StaffReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => StaffRoute,
+} as any)
 const StaffStudentsIndexRoute = StaffStudentsIndexRouteImport.update({
   id: '/students/',
   path: '/students/',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffAttendanceIndexRoute = StaffAttendanceIndexRouteImport.update({
+  id: '/attendance/',
+  path: '/attendance/',
   getParentRoute: () => StaffRoute,
 } as any)
 const StaffStudentsNewRoute = StaffStudentsNewRouteImport.update({
@@ -79,6 +92,11 @@ const StaffStudentsNewRoute = StaffStudentsNewRouteImport.update({
 const StaffStudentsProfileIdRoute = StaffStudentsProfileIdRouteImport.update({
   id: '/students/$profileId',
   path: '/students/$profileId',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffAttendanceNewRoute = StaffAttendanceNewRouteImport.update({
+  id: '/attendance/new',
+  path: '/attendance/new',
   getParentRoute: () => StaffRoute,
 } as any)
 const ApiStaffSyncRoute = ApiStaffSyncRouteImport.update({
@@ -147,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/staff': typeof StaffRouteWithChildren
+  '/staff/reports': typeof StaffReportsRoute
   '/staff/': typeof StaffIndexRoute
   '/api/admin/audit-events': typeof ApiAdminAuditEventsRoute
   '/api/admin/staff-users': typeof ApiAdminStaffUsersRouteWithChildren
@@ -155,8 +174,10 @@ export interface FileRoutesByFullPath {
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/staff/bootstrap': typeof ApiStaffBootstrapRoute
   '/api/staff/sync': typeof ApiStaffSyncRoute
+  '/staff/attendance/new': typeof StaffAttendanceNewRoute
   '/staff/students/$profileId': typeof StaffStudentsProfileIdRouteWithChildren
   '/staff/students/new': typeof StaffStudentsNewRoute
+  '/staff/attendance/': typeof StaffAttendanceIndexRoute
   '/staff/students/': typeof StaffStudentsIndexRoute
   '/api/staff/device/activate': typeof ApiStaffDeviceActivateRoute
   '/api/staff/device/deactivate': typeof ApiStaffDeviceDeactivateRoute
@@ -169,6 +190,7 @@ export interface FileRoutesByTo {
   '/announcements': typeof AnnouncementsRoute
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
+  '/staff/reports': typeof StaffReportsRoute
   '/staff': typeof StaffIndexRoute
   '/api/admin/audit-events': typeof ApiAdminAuditEventsRoute
   '/api/admin/staff-users': typeof ApiAdminStaffUsersRouteWithChildren
@@ -177,8 +199,10 @@ export interface FileRoutesByTo {
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/staff/bootstrap': typeof ApiStaffBootstrapRoute
   '/api/staff/sync': typeof ApiStaffSyncRoute
+  '/staff/attendance/new': typeof StaffAttendanceNewRoute
   '/staff/students/$profileId': typeof StaffStudentsProfileIdRouteWithChildren
   '/staff/students/new': typeof StaffStudentsNewRoute
+  '/staff/attendance': typeof StaffAttendanceIndexRoute
   '/staff/students': typeof StaffStudentsIndexRoute
   '/api/staff/device/activate': typeof ApiStaffDeviceActivateRoute
   '/api/staff/device/deactivate': typeof ApiStaffDeviceDeactivateRoute
@@ -193,6 +217,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/staff': typeof StaffRouteWithChildren
+  '/staff/reports': typeof StaffReportsRoute
   '/staff/': typeof StaffIndexRoute
   '/api/admin/audit-events': typeof ApiAdminAuditEventsRoute
   '/api/admin/staff-users': typeof ApiAdminStaffUsersRouteWithChildren
@@ -201,8 +226,10 @@ export interface FileRoutesById {
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/staff/bootstrap': typeof ApiStaffBootstrapRoute
   '/api/staff/sync': typeof ApiStaffSyncRoute
+  '/staff/attendance/new': typeof StaffAttendanceNewRoute
   '/staff/students/$profileId': typeof StaffStudentsProfileIdRouteWithChildren
   '/staff/students/new': typeof StaffStudentsNewRoute
+  '/staff/attendance/': typeof StaffAttendanceIndexRoute
   '/staff/students/': typeof StaffStudentsIndexRoute
   '/api/staff/device/activate': typeof ApiStaffDeviceActivateRoute
   '/api/staff/device/deactivate': typeof ApiStaffDeviceDeactivateRoute
@@ -218,6 +245,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/staff'
+    | '/staff/reports'
     | '/staff/'
     | '/api/admin/audit-events'
     | '/api/admin/staff-users'
@@ -226,8 +254,10 @@ export interface FileRouteTypes {
     | '/api/auth/session'
     | '/api/staff/bootstrap'
     | '/api/staff/sync'
+    | '/staff/attendance/new'
     | '/staff/students/$profileId'
     | '/staff/students/new'
+    | '/staff/attendance/'
     | '/staff/students/'
     | '/api/staff/device/activate'
     | '/api/staff/device/deactivate'
@@ -240,6 +270,7 @@ export interface FileRouteTypes {
     | '/announcements'
     | '/contact'
     | '/login'
+    | '/staff/reports'
     | '/staff'
     | '/api/admin/audit-events'
     | '/api/admin/staff-users'
@@ -248,8 +279,10 @@ export interface FileRouteTypes {
     | '/api/auth/session'
     | '/api/staff/bootstrap'
     | '/api/staff/sync'
+    | '/staff/attendance/new'
     | '/staff/students/$profileId'
     | '/staff/students/new'
+    | '/staff/attendance'
     | '/staff/students'
     | '/api/staff/device/activate'
     | '/api/staff/device/deactivate'
@@ -263,6 +296,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/staff'
+    | '/staff/reports'
     | '/staff/'
     | '/api/admin/audit-events'
     | '/api/admin/staff-users'
@@ -271,8 +305,10 @@ export interface FileRouteTypes {
     | '/api/auth/session'
     | '/api/staff/bootstrap'
     | '/api/staff/sync'
+    | '/staff/attendance/new'
     | '/staff/students/$profileId'
     | '/staff/students/new'
+    | '/staff/attendance/'
     | '/staff/students/'
     | '/api/staff/device/activate'
     | '/api/staff/device/deactivate'
@@ -349,11 +385,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaffIndexRouteImport
       parentRoute: typeof StaffRoute
     }
+    '/staff/reports': {
+      id: '/staff/reports'
+      path: '/reports'
+      fullPath: '/staff/reports'
+      preLoaderRoute: typeof StaffReportsRouteImport
+      parentRoute: typeof StaffRoute
+    }
     '/staff/students/': {
       id: '/staff/students/'
       path: '/students'
       fullPath: '/staff/students/'
       preLoaderRoute: typeof StaffStudentsIndexRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/attendance/': {
+      id: '/staff/attendance/'
+      path: '/attendance'
+      fullPath: '/staff/attendance/'
+      preLoaderRoute: typeof StaffAttendanceIndexRouteImport
       parentRoute: typeof StaffRoute
     }
     '/staff/students/new': {
@@ -368,6 +418,13 @@ declare module '@tanstack/react-router' {
       path: '/students/$profileId'
       fullPath: '/staff/students/$profileId'
       preLoaderRoute: typeof StaffStudentsProfileIdRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/attendance/new': {
+      id: '/staff/attendance/new'
+      path: '/attendance/new'
+      fullPath: '/staff/attendance/new'
+      preLoaderRoute: typeof StaffAttendanceNewRouteImport
       parentRoute: typeof StaffRoute
     }
     '/api/staff/sync': {
@@ -465,16 +522,22 @@ const StaffStudentsProfileIdRouteWithChildren =
   )
 
 interface StaffRouteChildren {
+  StaffReportsRoute: typeof StaffReportsRoute
   StaffIndexRoute: typeof StaffIndexRoute
+  StaffAttendanceNewRoute: typeof StaffAttendanceNewRoute
   StaffStudentsProfileIdRoute: typeof StaffStudentsProfileIdRouteWithChildren
   StaffStudentsNewRoute: typeof StaffStudentsNewRoute
+  StaffAttendanceIndexRoute: typeof StaffAttendanceIndexRoute
   StaffStudentsIndexRoute: typeof StaffStudentsIndexRoute
 }
 
 const StaffRouteChildren: StaffRouteChildren = {
+  StaffReportsRoute: StaffReportsRoute,
   StaffIndexRoute: StaffIndexRoute,
+  StaffAttendanceNewRoute: StaffAttendanceNewRoute,
   StaffStudentsProfileIdRoute: StaffStudentsProfileIdRouteWithChildren,
   StaffStudentsNewRoute: StaffStudentsNewRoute,
+  StaffAttendanceIndexRoute: StaffAttendanceIndexRoute,
   StaffStudentsIndexRoute: StaffStudentsIndexRoute,
 }
 

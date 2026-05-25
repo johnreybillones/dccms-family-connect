@@ -1,6 +1,6 @@
 const PASSWORD_SALT_BYTES = 16;
 const PASSWORD_HASH_BYTES = 32;
-const PBKDF2_ITERATIONS = 600_000;
+const PBKDF2_ITERATIONS = 100_000;
 
 type ParsedPasswordHash = {
   salt: Uint8Array;

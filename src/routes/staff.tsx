@@ -13,18 +13,10 @@
  * empty; the staff/index loader re-validates with /api/auth/session.
  */
 
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
-import { getSession } from "@/features/staff/client/session-store";
 import { StaffLayout } from "@/components/staff/StaffLayout";
 
 export const Route = createFileRoute("/staff")({
-  // Guard: redirect to login if no session is in memory.
-  // The staff/index loader will additionally validate with the server.
-  beforeLoad() {
-    if (!getSession()) {
-      throw redirect({ to: "/login", replace: true });
-    }
-  },
   component: StaffLayout,
 });

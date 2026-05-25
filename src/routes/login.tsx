@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 
 import seal from "@/assets/seal-logo.png";
-import { loginWithCredentials } from "@/features/staff/client/auth-client";
+import { fetchSession, loginWithCredentials } from "@/features/staff/client/auth-client";
 import { getSession, setSession } from "@/features/staff/client/session-store";
 
 export const Route = createFileRoute("/login")({
@@ -35,6 +35,26 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function hydrateSession() {
+      if (getSession()) return;
+
+      const session = await fetchSession();
+      if (!cancelled && session.authenticated) {
+        setSession(session.details.user);
+        navigate({ to: "/staff", replace: true });
+      }
+    }
+
+    void hydrateSession();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

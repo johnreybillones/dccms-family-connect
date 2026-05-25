@@ -86,6 +86,7 @@ type FormValues = z.infer<typeof formSchema>;
 function makeDefaults(profile?: EnrollmentProfile): FormValues {
   const today = new Date().toISOString().slice(0, 10);
   const thisYear = new Date().getFullYear();
+  const startYear = new Date().getMonth() >= 5 ? thisYear : thisYear - 1;
 
   if (profile) {
     return {
@@ -115,7 +116,7 @@ function makeDefaults(profile?: EnrollmentProfile): FormValues {
     guardianFullName: "",
     guardianRelationship: "",
     guardianContactNumber: "",
-    schoolYear: `${thisYear}-${thisYear + 1}`,
+    schoolYear: `${startYear}-${startYear + 1}`,
     enrollmentDate: today,
   };
 }

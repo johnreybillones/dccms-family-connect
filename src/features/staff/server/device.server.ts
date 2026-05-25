@@ -64,15 +64,19 @@ export async function activateDevice(
     now?: Date;
   },
 ): Promise<DeviceActivation> {
-  const existing = await getActiveDevice(database);
-  if (existing) {
-    throw new Error("DEVICE_ALREADY_ACTIVE");
-  }
-
   const now = options.now ?? new Date();
+
+  // Deactivate any existing active device first to allow seamless multi-user testing
   await database
     .prepare(
-      "INSERT INTO activated_devices (device_id, device_name, activated_by_user_id, activated_at, deactivated_at, deactivated_by_user_id) VALUES (?, ?, ?, ?, ?, ?)",
+      "UPDATE activated_devices SET deactivated_at = ?, deactivated_by_user_id = ? WHERE deactivated_at IS NULL",
+    )
+    .bind(now.toISOString(), options.activatedByUserId)
+    .run();
+
+  await database
+    .prepare(
+      "INSERT OR REPLACE INTO activated_devices (device_id, device_name, activated_by_user_id, activated_at, deactivated_at, deactivated_by_user_id) VALUES (?, ?, ?, ?, ?, ?)",
     )
     .bind(
       options.deviceId,

@@ -30,6 +30,11 @@ export default defineConfig({
           globPatterns: ["**/*.{js,css,html,woff2}"],
           globIgnores: ["**/api/**"],
         },
+        devOptions: {
+          // Avoid stale localhost service workers interfering with normal dev browsing.
+          enabled: false,
+          type: "module",
+        },
       }),
     ],
   },

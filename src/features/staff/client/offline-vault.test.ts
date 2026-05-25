@@ -108,7 +108,7 @@ const SAMPLE_PROFILE: EnrollmentProfile = {
 
 describe("offline-vault: PIN enroll and unlock", () => {
   beforeEach(async () => {
-    lockVault();
+    await resetAndWipeLocalData();
   });
 
   it("enrolls a PIN and unlocks the vault successfully", async () => {
@@ -147,7 +147,7 @@ describe("offline-vault: PIN enroll and unlock", () => {
 
 describe("offline-vault: encrypted profile CRUD", () => {
   beforeEach(async () => {
-    lockVault();
+    await resetAndWipeLocalData();
     await enrollPin(TEST_USER_ID, CORRECT_PIN);
     await unlockVault(TEST_USER_ID, CORRECT_PIN);
   });
@@ -169,8 +169,8 @@ describe("offline-vault: encrypted profile CRUD", () => {
 });
 
 describe("offline-vault: PIN lock delay", () => {
-  beforeEach(() => {
-    lockVault();
+  beforeEach(async () => {
+    await resetAndWipeLocalData();
   });
 
   it("starts with no lock", () => {
@@ -181,6 +181,10 @@ describe("offline-vault: PIN lock delay", () => {
 });
 
 describe("offline-vault: activation metadata", () => {
+  beforeEach(async () => {
+    await resetAndWipeLocalData();
+  });
+
   it("saves and retrieves activation metadata", async () => {
     await saveActivationMeta({
       deviceId: "dev-001",
@@ -193,6 +197,10 @@ describe("offline-vault: activation metadata", () => {
 });
 
 describe("offline-vault: reset", () => {
+  beforeEach(async () => {
+    await resetAndWipeLocalData();
+  });
+
   it("wipes vault and data on reset", async () => {
     await enrollPin(TEST_USER_ID, CORRECT_PIN);
     await unlockVault(TEST_USER_ID, CORRECT_PIN);

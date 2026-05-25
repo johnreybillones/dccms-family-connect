@@ -16,7 +16,7 @@
  * motion via FadeInWhenVisible + StaggerChildren (prefers-reduced-motion safe).
  */
 
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   BookOpen,
   CalendarCheck2,
@@ -29,8 +29,7 @@ import {
 
 import { FadeInWhenVisible, StaggerChildren, StaggerItem } from "@/components/motion";
 import { LiveSyncStatus } from "@/components/staff/SyncStatus";
-import { fetchSession } from "@/features/staff/client/auth-client";
-import { setSession, useSession } from "@/features/staff/client/session-store";
+import { useSession } from "@/features/staff/client/session-store";
 
 // ---------------------------------------------------------------------------
 // Route definition
@@ -43,18 +42,6 @@ export const Route = createFileRoute("/staff/")({
       { name: "description", content: "Staff dashboard for the DCCMS Day Care Center portal." },
     ],
   }),
-
-  async loader() {
-    // Temporary bypass for developer preview (mocks a successful login):
-    const dummyUser = {
-      id: "usr_preview",
-      username: "teacher_anna",
-      displayName: "Teacher Anna",
-      role: "administrator" as const, // Show both staff cards and admin tools!
-    };
-    setSession(dummyUser);
-    return { authDetails: { user: dummyUser, device: null } };
-  },
 
   component: StaffHome,
 });
@@ -196,20 +183,9 @@ function DeferredCard({ card }: { card: DeferredCard }) {
 // Page component
 // ---------------------------------------------------------------------------
 
-import { useEffect } from "react";
-import { getSession } from "@/features/staff/client/session-store";
-
 function StaffHome() {
-  const { authDetails } = Route.useLoaderData();
-  const user = useSession() || authDetails.user;
+  const user = useSession();
   const isAdmin = user?.role === "administrator";
-
-  // Hydrate the reactive client-side store with the loader's authenticated user on mount.
-  useEffect(() => {
-    if (!getSession() && authDetails?.user) {
-      setSession(authDetails.user);
-    }
-  }, [authDetails.user]);
 
   const greeting = (() => {
     const h = new Date().getHours();
