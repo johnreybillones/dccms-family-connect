@@ -39,6 +39,9 @@ git pull origin management-system
 
 # Create your task-specific branch
 git switch -c dev-shared-contract
+
+# Publish the branch and set the upstream on first push
+git push -u origin dev-shared-contract
 ```
 
 ### 2. Commit Often with Descriptive Messages
@@ -49,10 +52,17 @@ Use structured prefix commit messages:
 *   `fix:` for bug resolution
 
 ### 3. Merge Back via Non-Fast-Forward Merge
-When a task block is completed and verified, merge it back into `management-system` using the `--no-ff` flag to preserve the merge history:
+When a task block is completed and verified, push the final branch state, then merge it back into
+`management-system` using the `--no-ff` flag to preserve the merge history:
 ```bash
+# Push the completed branch before merging
+git push origin dev-shared-contract
+
 git switch management-system
 git merge --no-ff dev-shared-contract
+
+# Publish the updated integration branch
+git push origin management-system
 ```
 
 ---
