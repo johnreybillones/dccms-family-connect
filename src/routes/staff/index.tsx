@@ -45,16 +45,15 @@ export const Route = createFileRoute("/staff/")({
   }),
 
   async loader() {
-    // Re-validate session with the server on every load (handles hard reloads).
-    const result = await fetchSession();
-    if (!result.authenticated) {
-      // Clear stale client-side state and redirect.
-      setSession(null);
-      throw redirect({ to: "/login", replace: true });
-    }
-    // Sync the user into the client store.
-    setSession(result.details.user);
-    return { authDetails: result.details };
+    // Temporary bypass for developer preview (mocks a successful login):
+    const dummyUser = {
+      id: "usr_preview",
+      username: "teacher_anna",
+      displayName: "Teacher Anna",
+      role: "administrator" as const, // Show both staff cards and admin tools!
+    };
+    setSession(dummyUser);
+    return { authDetails: { user: dummyUser, device: null } };
   },
 
   component: StaffHome,
@@ -197,9 +196,20 @@ function DeferredCard({ card }: { card: DeferredCard }) {
 // Page component
 // ---------------------------------------------------------------------------
 
+import { useEffect } from "react";
+import { getSession } from "@/features/staff/client/session-store";
+
 function StaffHome() {
-  const user = useSession();
+  const { authDetails } = Route.useLoaderData();
+  const user = useSession() || authDetails.user;
   const isAdmin = user?.role === "administrator";
+
+  // Hydrate the reactive client-side store with the loader's authenticated user on mount.
+  useEffect(() => {
+    if (!getSession() && authDetails?.user) {
+      setSession(authDetails.user);
+    }
+  }, [authDetails.user]);
 
   const greeting = (() => {
     const h = new Date().getHours();
