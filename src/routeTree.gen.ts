@@ -16,11 +16,17 @@ import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StaffIndexRouteImport } from './routes/staff/index'
+import { Route as StaffStudentsIndexRouteImport } from './routes/staff/students/index'
+import { Route as StaffStudentsNewRouteImport } from './routes/staff/students/new'
+import { Route as StaffStudentsProfileIdRouteImport } from './routes/staff/students/$profileId'
+import { Route as ApiStaffSyncRouteImport } from './routes/api/staff/sync'
+import { Route as ApiStaffBootstrapRouteImport } from './routes/api/staff/bootstrap'
 import { Route as ApiAuthSessionRouteImport } from './routes/api/auth/session'
 import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
 import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
 import { Route as ApiAdminStaffUsersRouteImport } from './routes/api/admin/staff-users'
 import { Route as ApiAdminAuditEventsRouteImport } from './routes/api/admin/audit-events'
+import { Route as StaffStudentsProfileIdEditRouteImport } from './routes/staff/students/$profileId.edit'
 import { Route as ApiStaffDeviceDeactivateRouteImport } from './routes/api/staff/device/deactivate'
 import { Route as ApiStaffDeviceActivateRouteImport } from './routes/api/staff/device/activate'
 import { Route as ApiAdminStaffUsersUserIdDeactivateRouteImport } from './routes/api/admin/staff-users/$userId/deactivate'
@@ -60,6 +66,31 @@ const StaffIndexRoute = StaffIndexRouteImport.update({
   path: '/',
   getParentRoute: () => StaffRoute,
 } as any)
+const StaffStudentsIndexRoute = StaffStudentsIndexRouteImport.update({
+  id: '/students/',
+  path: '/students/',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffStudentsNewRoute = StaffStudentsNewRouteImport.update({
+  id: '/students/new',
+  path: '/students/new',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffStudentsProfileIdRoute = StaffStudentsProfileIdRouteImport.update({
+  id: '/students/$profileId',
+  path: '/students/$profileId',
+  getParentRoute: () => StaffRoute,
+} as any)
+const ApiStaffSyncRoute = ApiStaffSyncRouteImport.update({
+  id: '/api/staff/sync',
+  path: '/api/staff/sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStaffBootstrapRoute = ApiStaffBootstrapRouteImport.update({
+  id: '/api/staff/bootstrap',
+  path: '/api/staff/bootstrap',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSessionRoute = ApiAuthSessionRouteImport.update({
   id: '/api/auth/session',
   path: '/api/auth/session',
@@ -85,6 +116,12 @@ const ApiAdminAuditEventsRoute = ApiAdminAuditEventsRouteImport.update({
   path: '/api/admin/audit-events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StaffStudentsProfileIdEditRoute =
+  StaffStudentsProfileIdEditRouteImport.update({
+    id: '/edit',
+    path: '/edit',
+    getParentRoute: () => StaffStudentsProfileIdRoute,
+  } as any)
 const ApiStaffDeviceDeactivateRoute =
   ApiStaffDeviceDeactivateRouteImport.update({
     id: '/api/staff/device/deactivate',
@@ -116,8 +153,14 @@ export interface FileRoutesByFullPath {
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/staff/bootstrap': typeof ApiStaffBootstrapRoute
+  '/api/staff/sync': typeof ApiStaffSyncRoute
+  '/staff/students/$profileId': typeof StaffStudentsProfileIdRouteWithChildren
+  '/staff/students/new': typeof StaffStudentsNewRoute
+  '/staff/students/': typeof StaffStudentsIndexRoute
   '/api/staff/device/activate': typeof ApiStaffDeviceActivateRoute
   '/api/staff/device/deactivate': typeof ApiStaffDeviceDeactivateRoute
+  '/staff/students/$profileId/edit': typeof StaffStudentsProfileIdEditRoute
   '/api/admin/staff-users/$userId/deactivate': typeof ApiAdminStaffUsersUserIdDeactivateRoute
 }
 export interface FileRoutesByTo {
@@ -132,8 +175,14 @@ export interface FileRoutesByTo {
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/staff/bootstrap': typeof ApiStaffBootstrapRoute
+  '/api/staff/sync': typeof ApiStaffSyncRoute
+  '/staff/students/$profileId': typeof StaffStudentsProfileIdRouteWithChildren
+  '/staff/students/new': typeof StaffStudentsNewRoute
+  '/staff/students': typeof StaffStudentsIndexRoute
   '/api/staff/device/activate': typeof ApiStaffDeviceActivateRoute
   '/api/staff/device/deactivate': typeof ApiStaffDeviceDeactivateRoute
+  '/staff/students/$profileId/edit': typeof StaffStudentsProfileIdEditRoute
   '/api/admin/staff-users/$userId/deactivate': typeof ApiAdminStaffUsersUserIdDeactivateRoute
 }
 export interface FileRoutesById {
@@ -150,8 +199,14 @@ export interface FileRoutesById {
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/staff/bootstrap': typeof ApiStaffBootstrapRoute
+  '/api/staff/sync': typeof ApiStaffSyncRoute
+  '/staff/students/$profileId': typeof StaffStudentsProfileIdRouteWithChildren
+  '/staff/students/new': typeof StaffStudentsNewRoute
+  '/staff/students/': typeof StaffStudentsIndexRoute
   '/api/staff/device/activate': typeof ApiStaffDeviceActivateRoute
   '/api/staff/device/deactivate': typeof ApiStaffDeviceDeactivateRoute
+  '/staff/students/$profileId/edit': typeof StaffStudentsProfileIdEditRoute
   '/api/admin/staff-users/$userId/deactivate': typeof ApiAdminStaffUsersUserIdDeactivateRoute
 }
 export interface FileRouteTypes {
@@ -169,8 +224,14 @@ export interface FileRouteTypes {
     | '/api/auth/login'
     | '/api/auth/logout'
     | '/api/auth/session'
+    | '/api/staff/bootstrap'
+    | '/api/staff/sync'
+    | '/staff/students/$profileId'
+    | '/staff/students/new'
+    | '/staff/students/'
     | '/api/staff/device/activate'
     | '/api/staff/device/deactivate'
+    | '/staff/students/$profileId/edit'
     | '/api/admin/staff-users/$userId/deactivate'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -185,8 +246,14 @@ export interface FileRouteTypes {
     | '/api/auth/login'
     | '/api/auth/logout'
     | '/api/auth/session'
+    | '/api/staff/bootstrap'
+    | '/api/staff/sync'
+    | '/staff/students/$profileId'
+    | '/staff/students/new'
+    | '/staff/students'
     | '/api/staff/device/activate'
     | '/api/staff/device/deactivate'
+    | '/staff/students/$profileId/edit'
     | '/api/admin/staff-users/$userId/deactivate'
   id:
     | '__root__'
@@ -202,8 +269,14 @@ export interface FileRouteTypes {
     | '/api/auth/login'
     | '/api/auth/logout'
     | '/api/auth/session'
+    | '/api/staff/bootstrap'
+    | '/api/staff/sync'
+    | '/staff/students/$profileId'
+    | '/staff/students/new'
+    | '/staff/students/'
     | '/api/staff/device/activate'
     | '/api/staff/device/deactivate'
+    | '/staff/students/$profileId/edit'
     | '/api/admin/staff-users/$userId/deactivate'
   fileRoutesById: FileRoutesById
 }
@@ -219,6 +292,8 @@ export interface RootRouteChildren {
   ApiAuthLoginRoute: typeof ApiAuthLoginRoute
   ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiAuthSessionRoute: typeof ApiAuthSessionRoute
+  ApiStaffBootstrapRoute: typeof ApiStaffBootstrapRoute
+  ApiStaffSyncRoute: typeof ApiStaffSyncRoute
   ApiStaffDeviceActivateRoute: typeof ApiStaffDeviceActivateRoute
   ApiStaffDeviceDeactivateRoute: typeof ApiStaffDeviceDeactivateRoute
 }
@@ -274,6 +349,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaffIndexRouteImport
       parentRoute: typeof StaffRoute
     }
+    '/staff/students/': {
+      id: '/staff/students/'
+      path: '/students'
+      fullPath: '/staff/students/'
+      preLoaderRoute: typeof StaffStudentsIndexRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/students/new': {
+      id: '/staff/students/new'
+      path: '/students/new'
+      fullPath: '/staff/students/new'
+      preLoaderRoute: typeof StaffStudentsNewRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/students/$profileId': {
+      id: '/staff/students/$profileId'
+      path: '/students/$profileId'
+      fullPath: '/staff/students/$profileId'
+      preLoaderRoute: typeof StaffStudentsProfileIdRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/api/staff/sync': {
+      id: '/api/staff/sync'
+      path: '/api/staff/sync'
+      fullPath: '/api/staff/sync'
+      preLoaderRoute: typeof ApiStaffSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/staff/bootstrap': {
+      id: '/api/staff/bootstrap'
+      path: '/api/staff/bootstrap'
+      fullPath: '/api/staff/bootstrap'
+      preLoaderRoute: typeof ApiStaffBootstrapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/session': {
       id: '/api/auth/session'
       path: '/api/auth/session'
@@ -309,6 +419,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAdminAuditEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/staff/students/$profileId/edit': {
+      id: '/staff/students/$profileId/edit'
+      path: '/edit'
+      fullPath: '/staff/students/$profileId/edit'
+      preLoaderRoute: typeof StaffStudentsProfileIdEditRouteImport
+      parentRoute: typeof StaffStudentsProfileIdRoute
+    }
     '/api/staff/device/deactivate': {
       id: '/api/staff/device/deactivate'
       path: '/api/staff/device/deactivate'
@@ -333,12 +450,32 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface StaffStudentsProfileIdRouteChildren {
+  StaffStudentsProfileIdEditRoute: typeof StaffStudentsProfileIdEditRoute
+}
+
+const StaffStudentsProfileIdRouteChildren: StaffStudentsProfileIdRouteChildren =
+  {
+    StaffStudentsProfileIdEditRoute: StaffStudentsProfileIdEditRoute,
+  }
+
+const StaffStudentsProfileIdRouteWithChildren =
+  StaffStudentsProfileIdRoute._addFileChildren(
+    StaffStudentsProfileIdRouteChildren,
+  )
+
 interface StaffRouteChildren {
   StaffIndexRoute: typeof StaffIndexRoute
+  StaffStudentsProfileIdRoute: typeof StaffStudentsProfileIdRouteWithChildren
+  StaffStudentsNewRoute: typeof StaffStudentsNewRoute
+  StaffStudentsIndexRoute: typeof StaffStudentsIndexRoute
 }
 
 const StaffRouteChildren: StaffRouteChildren = {
   StaffIndexRoute: StaffIndexRoute,
+  StaffStudentsProfileIdRoute: StaffStudentsProfileIdRouteWithChildren,
+  StaffStudentsNewRoute: StaffStudentsNewRoute,
+  StaffStudentsIndexRoute: StaffStudentsIndexRoute,
 }
 
 const StaffRouteWithChildren = StaffRoute._addFileChildren(StaffRouteChildren)
@@ -367,6 +504,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthLoginRoute: ApiAuthLoginRoute,
   ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiAuthSessionRoute: ApiAuthSessionRoute,
+  ApiStaffBootstrapRoute: ApiStaffBootstrapRoute,
+  ApiStaffSyncRoute: ApiStaffSyncRoute,
   ApiStaffDeviceActivateRoute: ApiStaffDeviceActivateRoute,
   ApiStaffDeviceDeactivateRoute: ApiStaffDeviceDeactivateRoute,
 }

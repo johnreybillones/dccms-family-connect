@@ -36,6 +36,53 @@ export type StoredAuthorizedDeviceUser = {
   enrolledAt: string | null;
 };
 
+export type StoredProfile = {
+  id: string;
+  recordNumber: string | null;
+  childFirstName: string;
+  childMiddleName: string | null;
+  childLastName: string;
+  childSuffix: string | null;
+  birthDate: string;
+  sex: "Female" | "Male" | "Not specified";
+  address: string;
+  guardianFullName: string;
+  guardianRelationship: string;
+  guardianContactNumber: string;
+  schoolYear: string;
+  enrollmentDate: string;
+  revision: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type StoredAttendanceRecord = {
+  id: string;
+  profileId: string;
+  attendanceDate: string;
+  status: "present" | "absent" | "excused";
+  note: string | null;
+  recordedByUserId: string;
+  revision: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type StoredSyncOperation = {
+  id: string;
+  deviceId: string;
+  operationId: string;
+  kind: string;
+  clientRecordedAt: string;
+  receivedAt: string;
+};
+
+export type StoredDeviceSyncState = {
+  deviceId: string;
+  revision: number;
+  lastSyncedAt: string | null;
+};
+
 export type StoredAuditEvent = {
   id: string;
   timestamp: string;
@@ -55,10 +102,64 @@ export class MemoryD1Database {
   public readonly sessions = new Map<string, StoredSession>();
   public readonly devices = new Map<string, StoredDevice>();
   public readonly authorizedDeviceUsers = new Map<string, StoredAuthorizedDeviceUser>();
+  public readonly profiles = new Map<string, StoredProfile>();
+  public readonly attendanceRecords = new Map<string, StoredAttendanceRecord>();
+  public readonly syncOperations: StoredSyncOperation[] = [];
+  public readonly deviceSyncStatus = new Map<string, StoredDeviceSyncState>();
   public readonly auditEvents: StoredAuditEvent[] = [];
+  private transactionSnapshot: MemorySnapshot | null = null;
 
   prepare(query: string) {
     return new MemoryD1Statement(this, collapseWhitespace(query));
+  }
+
+  async exec(query: string) {
+    if (query === "BEGIN IMMEDIATE") {
+      this.transactionSnapshot = this.snapshot();
+      return;
+    }
+
+    if (query === "COMMIT") {
+      this.transactionSnapshot = null;
+      return;
+    }
+
+    if (query === "ROLLBACK") {
+      if (this.transactionSnapshot) {
+        this.restore(this.transactionSnapshot);
+        this.transactionSnapshot = null;
+      }
+    }
+  }
+
+  private snapshot(): MemorySnapshot {
+    return {
+      users: cloneMap(this.users),
+      sessions: cloneMap(this.sessions),
+      devices: cloneMap(this.devices),
+      authorizedDeviceUsers: cloneMap(this.authorizedDeviceUsers),
+      profiles: cloneMap(this.profiles),
+      attendanceRecords: cloneMap(this.attendanceRecords),
+      syncOperations: this.syncOperations.map((entry) => ({ ...entry })),
+      deviceSyncStatus: cloneMap(this.deviceSyncStatus),
+      auditEvents: this.auditEvents.map((entry) => ({ ...entry })),
+    };
+  }
+
+  private restore(snapshot: MemorySnapshot) {
+    replaceMap(this.users, snapshot.users);
+    replaceMap(this.sessions, snapshot.sessions);
+    replaceMap(this.devices, snapshot.devices);
+    replaceMap(this.authorizedDeviceUsers, snapshot.authorizedDeviceUsers);
+    replaceMap(this.profiles, snapshot.profiles);
+    replaceMap(this.attendanceRecords, snapshot.attendanceRecords);
+    replaceMap(this.deviceSyncStatus, snapshot.deviceSyncStatus);
+
+    this.syncOperations.length = 0;
+    this.syncOperations.push(...snapshot.syncOperations.map((entry) => ({ ...entry })));
+
+    this.auditEvents.length = 0;
+    this.auditEvents.push(...snapshot.auditEvents.map((entry) => ({ ...entry })));
   }
 }
 
@@ -246,6 +347,257 @@ class MemoryD1Statement {
       return { meta: { changes: 1 } };
     }
 
+    if (
+      this.query ===
+      "INSERT INTO enrollment_profiles (id, record_number, child_first_name, child_middle_name, child_last_name, child_suffix, birth_date, sex, address, guardian_full_name, guardian_relationship, guardian_contact_number, school_year, enrollment_date, revision, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    ) {
+      const [
+        id,
+        recordNumber,
+        childFirstName,
+        childMiddleName,
+        childLastName,
+        childSuffix,
+        birthDate,
+        sex,
+        address,
+        guardianFullName,
+        guardianRelationship,
+        guardianContactNumber,
+        schoolYear,
+        enrollmentDate,
+        revision,
+        createdAt,
+        updatedAt,
+      ] = this.params as [
+        string,
+        string | null,
+        string,
+        string | null,
+        string,
+        string | null,
+        string,
+        StoredProfile["sex"],
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        number,
+        string,
+        string,
+      ];
+
+      this.database.profiles.set(id, {
+        id,
+        recordNumber,
+        childFirstName,
+        childMiddleName,
+        childLastName,
+        childSuffix,
+        birthDate,
+        sex,
+        address,
+        guardianFullName,
+        guardianRelationship,
+        guardianContactNumber,
+        schoolYear,
+        enrollmentDate,
+        revision,
+        createdAt,
+        updatedAt,
+      });
+      return { meta: { changes: 1 } };
+    }
+
+    if (
+      this.query ===
+      "UPDATE enrollment_profiles SET record_number = ?, child_first_name = ?, child_middle_name = ?, child_last_name = ?, child_suffix = ?, birth_date = ?, sex = ?, address = ?, guardian_full_name = ?, guardian_relationship = ?, guardian_contact_number = ?, school_year = ?, enrollment_date = ?, revision = ?, updated_at = ? WHERE id = ?"
+    ) {
+      const [
+        recordNumber,
+        childFirstName,
+        childMiddleName,
+        childLastName,
+        childSuffix,
+        birthDate,
+        sex,
+        address,
+        guardianFullName,
+        guardianRelationship,
+        guardianContactNumber,
+        schoolYear,
+        enrollmentDate,
+        revision,
+        updatedAt,
+        id,
+      ] = this.params as [
+        string | null,
+        string,
+        string | null,
+        string,
+        string | null,
+        string,
+        StoredProfile["sex"],
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        number,
+        string,
+        string,
+      ];
+      const profile = this.database.profiles.get(id);
+      if (!profile) {
+        return { meta: { changes: 0 } };
+      }
+
+      Object.assign(profile, {
+        recordNumber,
+        childFirstName,
+        childMiddleName,
+        childLastName,
+        childSuffix,
+        birthDate,
+        sex,
+        address,
+        guardianFullName,
+        guardianRelationship,
+        guardianContactNumber,
+        schoolYear,
+        enrollmentDate,
+        revision,
+        updatedAt,
+      });
+      return { meta: { changes: 1 } };
+    }
+
+    if (
+      this.query ===
+      "INSERT INTO attendance_records (id, profile_id, attendance_date, status, note, recorded_by_user_id, revision, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    ) {
+      const [
+        id,
+        profileId,
+        attendanceDate,
+        status,
+        note,
+        recordedByUserId,
+        revision,
+        createdAt,
+        updatedAt,
+      ] = this.params as [
+        string,
+        string,
+        string,
+        StoredAttendanceRecord["status"],
+        string | null,
+        string,
+        number,
+        string,
+        string,
+      ];
+
+      this.database.attendanceRecords.set(id, {
+        id,
+        profileId,
+        attendanceDate,
+        status,
+        note,
+        recordedByUserId,
+        revision,
+        createdAt,
+        updatedAt,
+      });
+      return { meta: { changes: 1 } };
+    }
+
+    if (
+      this.query ===
+      "UPDATE attendance_records SET profile_id = ?, attendance_date = ?, status = ?, note = ?, recorded_by_user_id = ?, revision = ?, updated_at = ? WHERE id = ?"
+    ) {
+      const [profileId, attendanceDate, status, note, recordedByUserId, revision, updatedAt, id] =
+        this.params as [
+          string,
+          string,
+          StoredAttendanceRecord["status"],
+          string | null,
+          string,
+          number,
+          string,
+          string,
+        ];
+      const record = this.database.attendanceRecords.get(id);
+      if (!record) {
+        return { meta: { changes: 0 } };
+      }
+
+      Object.assign(record, {
+        profileId,
+        attendanceDate,
+        status,
+        note,
+        recordedByUserId,
+        revision,
+        updatedAt,
+      });
+      return { meta: { changes: 1 } };
+    }
+
+    if (
+      this.query ===
+      "INSERT INTO sync_operations (id, device_id, operation_id, kind, client_recorded_at, received_at) VALUES (?, ?, ?, ?, ?, ?)"
+    ) {
+      const [id, deviceId, operationId, kind, clientRecordedAt, receivedAt] = this.params as [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+      ];
+      this.database.syncOperations.push({
+        id,
+        deviceId,
+        operationId,
+        kind,
+        clientRecordedAt,
+        receivedAt,
+      });
+      return { meta: { changes: 1 } };
+    }
+
+    if (
+      this.query ===
+      "INSERT INTO device_sync_state (device_id, revision, last_synced_at) VALUES (?, ?, ?)"
+    ) {
+      const [deviceId, revision, lastSyncedAt] = this.params as [string, number, string | null];
+      this.database.deviceSyncStatus.set(deviceId, {
+        deviceId,
+        revision,
+        lastSyncedAt,
+      });
+      return { meta: { changes: 1 } };
+    }
+
+    if (
+      this.query ===
+      "UPDATE device_sync_state SET revision = ?, last_synced_at = ? WHERE device_id = ?"
+    ) {
+      const [revision, lastSyncedAt, deviceId] = this.params as [number, string | null, string];
+      const state = this.database.deviceSyncStatus.get(deviceId);
+      if (!state) {
+        return { meta: { changes: 0 } };
+      }
+
+      state.revision = revision;
+      state.lastSyncedAt = lastSyncedAt;
+      return { meta: { changes: 1 } };
+    }
+
     throw new Error(`Unsupported run query: ${this.query}`);
   }
 
@@ -328,6 +680,68 @@ class MemoryD1Statement {
       return { offlinePinHash: row.offlinePinHash } as T;
     }
 
+    if (
+      this.query ===
+      "SELECT id, record_number AS recordNumber, child_first_name AS childFirstName, child_middle_name AS childMiddleName, child_last_name AS childLastName, child_suffix AS childSuffix, birth_date AS birthDate, sex, address, guardian_full_name AS guardianFullName, guardian_relationship AS guardianRelationship, guardian_contact_number AS guardianContactNumber, school_year AS schoolYear, enrollment_date AS enrollmentDate, revision, created_at AS createdAt, updated_at AS updatedAt FROM enrollment_profiles WHERE id = ? LIMIT 1"
+    ) {
+      const [profileId] = this.params as [string];
+      return ((this.database.profiles.get(profileId) ?? null) as T) ?? null;
+    }
+
+    if (
+      this.query ===
+      "SELECT record_number AS recordNumber FROM enrollment_profiles WHERE record_number IS NOT NULL ORDER BY record_number DESC LIMIT 1"
+    ) {
+      const profile =
+        [...this.database.profiles.values()]
+          .filter((entry) => entry.recordNumber !== null)
+          .sort((left, right) =>
+            (right.recordNumber ?? "").localeCompare(left.recordNumber ?? ""),
+          )[0] ?? null;
+
+      return (profile ? ({ recordNumber: profile.recordNumber } as T) : null) ?? null;
+    }
+
+    if (
+      this.query ===
+      "SELECT id, profile_id AS profileId, attendance_date AS attendanceDate, status, note, recorded_by_user_id AS recordedByUserId, revision, created_at AS createdAt, updated_at AS updatedAt FROM attendance_records WHERE id = ? LIMIT 1"
+    ) {
+      const [attendanceId] = this.params as [string];
+      return ((this.database.attendanceRecords.get(attendanceId) ?? null) as T) ?? null;
+    }
+
+    if (
+      this.query ===
+      "SELECT id, profile_id AS profileId, attendance_date AS attendanceDate, status, note, recorded_by_user_id AS recordedByUserId, revision, created_at AS createdAt, updated_at AS updatedAt FROM attendance_records WHERE profile_id = ? AND attendance_date = ? LIMIT 1"
+    ) {
+      const [profileId, attendanceDate] = this.params as [string, string];
+      const record =
+        [...this.database.attendanceRecords.values()].find(
+          (entry) => entry.profileId === profileId && entry.attendanceDate === attendanceDate,
+        ) ?? null;
+      return (record as T) ?? null;
+    }
+
+    if (
+      this.query ===
+      "SELECT device_id AS deviceId, revision, last_synced_at AS lastSyncedAt FROM device_sync_state WHERE device_id = ? LIMIT 1"
+    ) {
+      const [deviceId] = this.params as [string];
+      return ((this.database.deviceSyncStatus.get(deviceId) ?? null) as T) ?? null;
+    }
+
+    if (
+      this.query ===
+      "SELECT operation_id AS operationId FROM sync_operations WHERE device_id = ? AND operation_id = ? LIMIT 1"
+    ) {
+      const [deviceId, operationId] = this.params as [string, string];
+      const row =
+        this.database.syncOperations.find(
+          (entry) => entry.deviceId === deviceId && entry.operationId === operationId,
+        ) ?? null;
+      return (row ? ({ operationId: row.operationId } as T) : null) ?? null;
+    }
+
     throw new Error(`Unsupported first query: ${this.query}`);
   }
 
@@ -342,10 +756,56 @@ class MemoryD1Statement {
       return { results: results as T[] };
     }
 
+    if (
+      this.query ===
+      "SELECT id, record_number AS recordNumber, child_first_name AS childFirstName, child_middle_name AS childMiddleName, child_last_name AS childLastName, child_suffix AS childSuffix, birth_date AS birthDate, sex, address, guardian_full_name AS guardianFullName, guardian_relationship AS guardianRelationship, guardian_contact_number AS guardianContactNumber, school_year AS schoolYear, enrollment_date AS enrollmentDate, revision, created_at AS createdAt, updated_at AS updatedAt FROM enrollment_profiles ORDER BY created_at ASC"
+    ) {
+      const results = [...this.database.profiles.values()]
+        .sort((left, right) => left.createdAt.localeCompare(right.createdAt))
+        .map((entry) => ({ ...entry }));
+      return { results: results as T[] };
+    }
+
+    if (
+      this.query ===
+      "SELECT id, profile_id AS profileId, attendance_date AS attendanceDate, status, note, recorded_by_user_id AS recordedByUserId, revision, created_at AS createdAt, updated_at AS updatedAt FROM attendance_records ORDER BY attendance_date ASC, created_at ASC"
+    ) {
+      const results = [...this.database.attendanceRecords.values()]
+        .sort((left, right) => {
+          const dateOrder = left.attendanceDate.localeCompare(right.attendanceDate);
+          return dateOrder !== 0 ? dateOrder : left.createdAt.localeCompare(right.createdAt);
+        })
+        .map((entry) => ({ ...entry }));
+      return { results: results as T[] };
+    }
+
     throw new Error(`Unsupported all query: ${this.query}`);
   }
 }
 
 function collapseWhitespace(value: string) {
   return value.replace(/\s+/g, " ").trim();
+}
+
+type MemorySnapshot = {
+  users: Map<string, StoredUser>;
+  sessions: Map<string, StoredSession>;
+  devices: Map<string, StoredDevice>;
+  authorizedDeviceUsers: Map<string, StoredAuthorizedDeviceUser>;
+  profiles: Map<string, StoredProfile>;
+  attendanceRecords: Map<string, StoredAttendanceRecord>;
+  syncOperations: StoredSyncOperation[];
+  deviceSyncStatus: Map<string, StoredDeviceSyncState>;
+  auditEvents: StoredAuditEvent[];
+};
+
+function cloneMap<T>(source: Map<string, T>) {
+  return new Map<string, T>([...source.entries()].map(([key, value]) => [key, { ...value }]));
+}
+
+function replaceMap<T>(target: Map<string, T>, next: Map<string, T>) {
+  target.clear();
+  for (const [key, value] of next.entries()) {
+    target.set(key, { ...value });
+  }
 }
