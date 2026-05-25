@@ -72,14 +72,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "San Antonio De Padua 1 Day Care Center" },
+      { name: "description", content: "Day Care Center Management System & Family Connect portal for Barangay San Antonio de Padua I, Dasmariñas City, Cavite." },
+      { name: "author", content: "DCCMS" },
+      { property: "og:title", content: "San Antonio De Padua 1 Day Care Center" },
+      { property: "og:description", content: "Day Care Center Management System & Family Connect portal for Barangay San Antonio de Padua I, Dasmariñas City, Cavite." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
