@@ -21,13 +21,13 @@ decisions.
 
 The existing public-facing pages remain part of this repository and remain publicly accessible.
 
-| Page | Route | Purpose | Status in Expanded V1 |
-| --- | --- | --- | --- |
-| Home | `/` | Introduces the daycare center and provides a staff login entry point | Keep public |
-| About | `/about` | Explains the daycare center, mission, values, and context | Keep public |
-| Announcements | `/announcements` | Parent-facing updates and notices | Keep public and sample-driven |
-| Contact | `/contact` | Public location and contact placeholders | Keep public |
-| Login | `/login` | Entry point into the protected staff experience | Upgrade to real authentication |
+| Page          | Route            | Purpose                                                              | Status in Expanded V1          |
+| ------------- | ---------------- | -------------------------------------------------------------------- | ------------------------------ |
+| Home          | `/`              | Introduces the daycare center and provides a staff login entry point | Keep public                    |
+| About         | `/about`         | Explains the daycare center, mission, values, and context            | Keep public                    |
+| Announcements | `/announcements` | Parent-facing updates and notices                                    | Keep public and sample-driven  |
+| Contact       | `/contact`       | Public location and contact placeholders                             | Keep public                    |
+| Login         | `/login`         | Entry point into the protected staff experience                      | Upgrade to real authentication |
 
 Public-site notes:
 
@@ -42,15 +42,15 @@ Release 1 is now the committed first protected DCCMS management release in this 
 not a placeholder or prototype scope. It includes Student Records, Attendance, Reports, offline
 sync, and role-based access as approved V1 features.
 
-| Area | Routes | V1 Commitment |
-| --- | --- | --- |
-| Authentication | `/login` | Real staff login with protected session handling |
-| Staff Home | `/staff` | Protected landing page for staff workflows |
-| Student Records | `/staff/students`, `/staff/students/new`, `/staff/students/$profileId`, `/staff/students/$profileId/edit` | Create, find, view, and update enrollment records |
-| Attendance | `/staff/attendance`, `/staff/attendance/new`, `/staff/attendance/$entryId/edit` | Create, filter, view, and update daily attendance |
-| Reports | `/staff/reports` | Generate and export Student Masterlist, Attendance Register / Summary, and Accomplishment Summary in `PDF` and `XLSX` |
-| Offline Device Workflow | protected staff flow | One activated daycare-controlled device, local-first saves, and automatic sync when online |
-| Access Control | protected staff flow | `administrator` and `staff` roles with separate responsibilities |
+| Area                    | Routes                                                                                                    | V1 Commitment                                                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Authentication          | `/login`                                                                                                  | Real staff login with protected session handling                                                                      |
+| Staff Home              | `/staff`                                                                                                  | Protected landing page for staff workflows                                                                            |
+| Student Records         | `/staff/students`, `/staff/students/new`, `/staff/students/$profileId`, `/staff/students/$profileId/edit` | Create, find, view, and update enrollment records                                                                     |
+| Attendance              | `/staff/attendance`, `/staff/attendance/new`, `/staff/attendance/$entryId/edit`                           | Create, filter, view, and update daily attendance                                                                     |
+| Reports                 | `/staff/reports`                                                                                          | Generate and export Student Masterlist, Attendance Register / Summary, and Accomplishment Summary in `PDF` and `XLSX` |
+| Offline Device Workflow | protected staff flow                                                                                      | One activated daycare-controlled device, local-first saves, and automatic sync when online                            |
+| Access Control          | protected staff flow                                                                                      | `administrator` and `staff` roles with separate responsibilities                                                      |
 
 ### Committed V1 Behavior
 
@@ -85,13 +85,13 @@ complete protected workflow that directly addresses those problems:
 These items are still acknowledged by the SIPP or earlier project materials, but they are not part
 of the committed V1 release. They must not be presented as already available.
 
-| Area | V1 Decision | Reason |
-| --- | --- | --- |
-| Health Records | Deferred | V1 keeps the record model focused on approved enrollment fields plus attendance |
-| Activities / Child Development | Deferred | Separate workflow not required for the first operational release |
-| Staff Announcement Management | Deferred | Public announcements stay sample-driven in V1 |
-| Reminders / Notifications | Deferred | Mentioned in source materials but not required for the first protected workflow |
-| Parent Messaging / Chat | Deferred and out of current release scope | Not part of the approved protected V1 implementation |
+| Area                           | V1 Decision                               | Reason                                                                          |
+| ------------------------------ | ----------------------------------------- | ------------------------------------------------------------------------------- |
+| Health Records                 | Deferred                                  | V1 keeps the record model focused on approved enrollment fields plus attendance |
+| Activities / Child Development | Deferred                                  | Separate workflow not required for the first operational release                |
+| Staff Announcement Management  | Deferred                                  | Public announcements stay sample-driven in V1                                   |
+| Reminders / Notifications      | Deferred                                  | Mentioned in source materials but not required for the first protected workflow |
+| Parent Messaging / Chat        | Deferred and out of current release scope | Not part of the approved protected V1 implementation                            |
 
 Deferred release rule:
 

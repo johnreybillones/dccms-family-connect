@@ -221,10 +221,7 @@ type DeviceActivation = {
   activatedAt: string;
 };
 
-type ReportType =
-  | "student_masterlist"
-  | "attendance_register_summary"
-  | "accomplishment_summary";
+type ReportType = "student_masterlist" | "attendance_register_summary" | "accomplishment_summary";
 
 type ReportFormat = "pdf" | "xlsx";
 
@@ -279,18 +276,18 @@ type SyncStatus =
 
 ### API Summary
 
-| Endpoint | Success Shape | Required Failure Behavior |
-| --- | --- | --- |
-| `POST /api/auth/login` | `{ user, hasActiveDevice, offlinePinEnrolled }` plus session cookie | `401 INVALID_CREDENTIALS`; log failed attempt |
-| `POST /api/auth/logout` | `204` and cleared session cookie | Safe and idempotent |
-| `GET /api/auth/session` | `{ user, device }` | `401 UNAUTHENTICATED` |
-| `POST /api/admin/staff-users` | `{ user }` | `403 FORBIDDEN`, validation errors |
-| `POST /api/admin/staff-users/$userId/deactivate` | `204` | `403 FORBIDDEN` |
-| `GET /api/admin/audit-events` | `{ events }` | `403 FORBIDDEN` |
-| `POST /api/staff/device/activate` | `{ device, bootstrapRequired: true }` | `409 DEVICE_ALREADY_ACTIVE` unless replacing after explicit deactivation |
-| `POST /api/staff/device/deactivate` | `204` | Requires authenticated administrator session |
-| `GET /api/staff/bootstrap?deviceId=...` | `{ profiles, attendanceRecords, syncedAt }` | `403 DEVICE_NOT_ACTIVE`; `Cache-Control: no-store` |
-| `POST /api/staff/sync` | `{ acknowledgedOperationIds, profiles, attendanceRecords, syncedAt }` | `401 REAUTH_REQUIRED`, `403 DEVICE_NOT_ACTIVE`, `409 REFRESH_REQUIRED` |
+| Endpoint                                         | Success Shape                                                         | Required Failure Behavior                                                |
+| ------------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `POST /api/auth/login`                           | `{ user, hasActiveDevice, offlinePinEnrolled }` plus session cookie   | `401 INVALID_CREDENTIALS`; log failed attempt                            |
+| `POST /api/auth/logout`                          | `204` and cleared session cookie                                      | Safe and idempotent                                                      |
+| `GET /api/auth/session`                          | `{ user, device }`                                                    | `401 UNAUTHENTICATED`                                                    |
+| `POST /api/admin/staff-users`                    | `{ user }`                                                            | `403 FORBIDDEN`, validation errors                                       |
+| `POST /api/admin/staff-users/$userId/deactivate` | `204`                                                                 | `403 FORBIDDEN`                                                          |
+| `GET /api/admin/audit-events`                    | `{ events }`                                                          | `403 FORBIDDEN`                                                          |
+| `POST /api/staff/device/activate`                | `{ device, bootstrapRequired: true }`                                 | `409 DEVICE_ALREADY_ACTIVE` unless replacing after explicit deactivation |
+| `POST /api/staff/device/deactivate`              | `204`                                                                 | Requires authenticated administrator session                             |
+| `GET /api/staff/bootstrap?deviceId=...`          | `{ profiles, attendanceRecords, syncedAt }`                           | `403 DEVICE_NOT_ACTIVE`; `Cache-Control: no-store`                       |
+| `POST /api/staff/sync`                           | `{ acknowledgedOperationIds, profiles, attendanceRecords, syncedAt }` | `401 REAUTH_REQUIRED`, `403 DEVICE_NOT_ACTIVE`, `409 REFRESH_REQUIRED`   |
 
 ## Reporting Rules
 
