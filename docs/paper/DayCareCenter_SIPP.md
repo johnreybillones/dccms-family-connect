@@ -129,21 +129,21 @@ The project proposes the development of a Day Care Center Management System for 
 1. **Constraints on Equipment and Connectivity**
    1. **Borrowed Devices**: The primary challenge that causes major delays in report generation is the lack of a dedicated computer.
    2. **Connectivity Restrictions**: Offline capability is a functional requirement that cannot be compromised due to inconsistent internet access.
-   3. **Software Familiarity:** Since the user presently uses Word, Excel, and Messenger, the interface of the system should continue to be straightforward and recognizable.  
+   3. **Software Familiarity:** Since the user presently uses Word, Excel, and Messenger, the interface of the system should continue to be straightforward and recognizable.
 
 2. **Human & Literacy Constraints**
    1. **Training Gap**: Although employees have had some training, they found it insufficient, which makes it harder for them to adapt to new technology.
-   2. **Technical Isolation**: When issues occur, even the barangay is unable to offer technical assistance, forcing personnel to be independent.  
+   2. **Technical Isolation**: When issues occur, even the barangay is unable to offer technical assistance, forcing personnel to be independent.
 
 3. **Data & Security Constraints**
    1. **Retrieval Inefficiency**: It can take up to an hour to find one student record in physical logbooks.
    2. **Security Risks**: Sensitive information is currently kept in unlocked cabinets or on devices that are shared with other people. This makes it more likely that someone will get into the information without permission or lose it.
-   3. **Automation Needs**: The hardest things to do right now are encoding databases and making Accomplishment Reports.  
+   3. **Automation Needs**: The hardest things to do right now are encoding databases and making Accomplishment Reports.
 
 4. **Desired Features**
    1. **Automation:** In order to facilitate editing and updating, the system must automatically generate reports.
    2. **Simple and User-friendly UI:** A simple, straightforward user interface for easy and intuitive interaction with the system.
-   3. **Active Notifications:** Reminders for scheduled training/events, announcements, and child monitoring.  
+   3. **Active Notifications:** Reminders for scheduled training/events, announcements, and child monitoring.
 
 5. **Transition to Digital**
    1. The personnel are very open to a digital solution despite the difficulties, pointing out that transferring records to the CSWD would be much simpler with an online database.
