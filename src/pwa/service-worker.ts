@@ -16,7 +16,7 @@
 /// <reference lib="webworker" />
 import { clientsClaim } from "workbox-core";
 import { precacheAndRoute, cleanupOutdatedCaches } from "workbox-precaching";
-import { registerRoute, NavigationRoute } from "workbox-routing";
+import { registerRoute } from "workbox-routing";
 import { NetworkOnly } from "workbox-strategies";
 
 declare const self: ServiceWorkerGlobalScope;
@@ -37,20 +37,7 @@ cleanupOutdatedCaches();
 registerRoute(({ url }) => url.pathname.startsWith("/api/"), new NetworkOnly());
 
 // ---------------------------------------------------------------------------
-// Navigation fallback — serve the shell for SPA client-side routing
-// (Applies only to non-API navigation requests)
+// Navigations must stay network-first.
+// TanStack Start renders documents through SSR, and this app does not precache
+// a static "/" shell that Workbox can safely replay offline.
 // ---------------------------------------------------------------------------
-
-const navigationRoute = new NavigationRoute(
-  async () => {
-    const cache = await caches.open("dccms-shell-v1");
-    const response = await cache.match("/");
-    return response ?? Response.error();
-  },
-  {
-    // Exclude /api/ paths from navigation fallback
-    denylist: [/^\/api\//],
-  },
-);
-
-registerRoute(navigationRoute);

@@ -1,11 +1,21 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "tanstack-start-app",
+	"name": "dccms",
 	"compatibility_date": "2025-09-24",
 	"compatibility_flags": [
 		"nodejs_compat"
 	],
 	"main": "src/server.ts",
+	"routes": [
+		{
+			"pattern": "sadp1-daycare.me",
+			"custom_domain": true
+		},
+		{
+			"pattern": "www.sadp1-daycare.me",
+			"custom_domain": true
+		}
+	],
 	"d1_databases": [
 		{
 			"binding": "DB",

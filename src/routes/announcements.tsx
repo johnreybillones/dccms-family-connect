@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
 import { FadeInWhenVisible, StaggerChildren, StaggerItem } from "@/components/motion";
-import kid from "@/assets/announcement-kid.jpg";
+import kid2 from "@/assets/announcement-kid.jpg";
+import kid from "@/assets/child-weight.jpg";
 import attendanceImg from "@/assets/feature-attendance.jpg";
-import aboutImg from "@/assets/about-class.jpg";
+import reminder from "@/assets/reminder.jpg";
 import rainbowImg from "@/assets/sky-rainbow.jpg";
 
 export const Route = createFileRoute("/announcements")({
@@ -34,15 +35,15 @@ const SAMPLE: Announcement[] = [
   {
     id: 4,
     tag: "Reminder",
-    date: "April 20, 2026",
+    date: "April 20, 2025",
     title: "Enrollment Reminder for SY 2026–2027",
     body: "Enrollment for the upcoming school year is now open. Please visit the Day Care Center or contact us for requirements and schedules.",
-    img: aboutImg,
+    img: reminder,
   },
   {
     id: 3,
     tag: "Health Alert",
-    date: "May 10, 2026",
+    date: "May 10, 2025",
     title: "Child Weight Monitoring Schedule",
     body: "Monthly weight check for all enrolled children will be conducted this week. Please ensure your child attends and bring their health booklet.",
     img: kid,
@@ -50,17 +51,17 @@ const SAMPLE: Announcement[] = [
   {
     id: 2,
     tag: "Event",
-    date: "May 3, 2026",
-    title: "Parent-Teacher Meeting",
-    body: "You are invited to our quarterly parent-teacher meeting to discuss your child's progress and upcoming center activities. Light snacks will be provided.",
+    date: "August 31, 2025",
+    title: "Buwan ng Wika",
+    body: "Children of the San Antonio Kiddie Day Care Center dressed in traditional Filipino costumes celebrate Buwan ng Wika at Barangay San Antonio de Padua I, Dasmariñas City, proudly waving Philippine flags in honor of the national language.",
     img: attendanceImg,
   },
   {
     id: 1,
     tag: "Holiday",
-    date: "April 28, 2026",
-    title: "No Classes — Labor Day",
-    body: "The Day Care Center will be closed on May 1 in observance of Labor Day. Regular classes resume the following day.",
+    date: "October 3, 2025",
+    title: "No Classes — Teachers' Day",
+    body: "Classes in all public daycare centers and elementary and high school levels will be suspended in Manila on Friday, October 4, in celebration of National and World Teachers’ Day.",
     img: rainbowImg,
   },
 ];
@@ -110,7 +111,7 @@ function AnnouncementsPage() {
           </div>
           <div className="rounded-[40%_60%_40%_60%/60%_40%_60%_40%] overflow-hidden aspect-square max-w-md mx-auto shadow-clay-card border-8 border-white">
             <img
-              src={kid}
+              src={kid2}
               alt="Happy child at the Day Care Center"
               className="w-full h-full object-cover"
               loading="lazy"

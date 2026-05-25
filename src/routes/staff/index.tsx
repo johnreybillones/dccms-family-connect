@@ -93,22 +93,18 @@ const PRIMARY_CARDS: ActionCard[] = [
   },
 ];
 
-const ADMIN_CARDS: ActionCard[] = [
+const ADMIN_CARDS: DeferredCard[] = [
   {
     label: "Manage Users",
     description: "Add or deactivate staff accounts",
-    to: "/staff/admin/users",
     Icon: Users,
-    color: "bg-violet-50 text-violet-800",
-    available: true,
+    available: false,
   },
   {
     label: "Audit Log",
     description: "Review security and data-change events",
-    to: "/staff/admin/audit",
     Icon: Shield,
-    color: "bg-violet-50 text-violet-800",
-    available: true,
+    available: false,
   },
 ];
 
@@ -251,7 +247,7 @@ function StaffHome() {
           <StaggerChildren className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {ADMIN_CARDS.map((card) => (
               <StaggerItem key={card.label}>
-                <QuickCard card={card} />
+                <DeferredCard card={card} />
               </StaggerItem>
             ))}
           </StaggerChildren>

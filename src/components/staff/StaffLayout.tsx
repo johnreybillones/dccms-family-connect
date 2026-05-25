@@ -62,13 +62,11 @@ const NAV_ENTRIES: NavEntry[] = [
 ];
 
 const ADMIN_NAV_ENTRIES: NavEntry[] = [
-  { kind: "link", label: "Manage Users", to: "/staff/admin/users", Icon: UserCog, adminOnly: true },
+  { kind: "deferred", label: "Manage Users", Icon: UserCog },
   {
-    kind: "link",
+    kind: "deferred",
     label: "Audit Log",
-    to: "/staff/admin/audit",
     Icon: ShieldCheck,
-    adminOnly: true,
   },
 ];
 
