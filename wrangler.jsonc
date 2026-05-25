@@ -6,6 +6,7 @@
 		"nodejs_compat"
 	],
 	"main": "src/server.ts",
+	"workers_dev": true,
 	"routes": [
 		{
 			"pattern": "sadp1-daycare.me",
