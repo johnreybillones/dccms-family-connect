@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Eye, EyeOff, Wifi, WifiOff, ArrowLeft, Loader2 } from "lucide-react";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
+
 import seal from "@/assets/seal-logo.png";
+import { loginWithCredentials } from "@/features/staff/client/auth-client";
+import { getSession, setSession } from "@/features/staff/client/session-store";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -13,35 +16,55 @@ export const Route = createFileRoute("/login")({
       },
     ],
   }),
+
+  // If a session is already in memory, skip the login page.
+  beforeLoad() {
+    if (getSession()) {
+      throw redirect({ to: "/staff", replace: true });
+    }
+  },
+
   component: LoginPage,
 });
 
-type Status = "idle" | "loading" | "invalid" | "success";
+type Status = "idle" | "loading" | "invalid" | "network_error" | "success";
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
-  const [online, setOnline] = useState(true);
   const [status, setStatus] = useState<Status>("idle");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
-    setTimeout(() => {
-      if (username === "demo" && password === "demo") setStatus("success");
-      else setStatus("invalid");
-    }, 900);
+
+    const result = await loginWithCredentials(username.trim(), password);
+
+    if (result.ok) {
+      setSession(result.user);
+      setStatus("success");
+      // Give the success message a moment, then navigate.
+      setTimeout(() => navigate({ to: "/staff", replace: true }), 350);
+      return;
+    }
+
+    if (result.code === "INVALID_CREDENTIALS") {
+      setStatus("invalid");
+    } else {
+      setStatus("network_error");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-sky/30 via-background to-brand/10">
+      <div className="w-full max-w-md bg-card rounded-3xl shadow-2xl border border-border/50 p-8">
         <div className="flex flex-col items-center text-center mb-6">
           <img
             src={seal}
             alt="Barangay seal"
-            className="h-20 w-20 rounded-full mb-3"
+            className="h-20 w-20 rounded-full mb-3 shadow-md"
             width={80}
             height={80}
           />
@@ -55,33 +78,40 @@ function LoginPage() {
           Authorized use only. Do not share your credentials. All activity may be logged.
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-4" noValidate>
           <div>
-            <label htmlFor="u" className="block text-sm font-bold mb-1">
+            <label htmlFor="login-username" className="block text-sm font-bold mb-1">
               Username
             </label>
             <input
-              id="u"
+              id="login-username"
+              name="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full border border-sky-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand"
+              className="w-full border border-sky-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand bg-background"
               autoComplete="username"
+              autoCapitalize="none"
+              spellCheck={false}
               required
+              disabled={status === "loading" || status === "success"}
             />
           </div>
+
           <div>
-            <label htmlFor="p" className="block text-sm font-bold mb-1">
+            <label htmlFor="login-password" className="block text-sm font-bold mb-1">
               Password
             </label>
             <div className="relative">
               <input
-                id="p"
+                id="login-password"
+                name="password"
                 type={show ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-sky-200 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full border border-sky-200 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand bg-background"
                 autoComplete="current-password"
                 required
+                disabled={status === "loading" || status === "success"}
               />
               <button
                 type="button"
@@ -94,38 +124,33 @@ function LoginPage() {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setOnline((v) => !v)}
-            className={`w-full inline-flex items-center justify-center gap-2 text-xs px-3 py-2 rounded-xl border ${
-              online
-                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                : "border-amber-200 bg-amber-50 text-amber-700"
-            }`}
-            aria-label="Toggle connectivity"
-          >
-            {online ? <Wifi size={14} /> : <WifiOff size={14} />}
-            {online ? "Online" : "Offline — login queued"}
-          </button>
-
+          {/* Error / success feedback */}
           {status === "invalid" && (
-            <p className="text-sm text-accent-red text-center">
-              Invalid username or password. Try “demo / demo”.
+            <p id="login-error" role="alert" className="text-sm text-accent-red text-center">
+              Incorrect username or password. Please try again.
+            </p>
+          )}
+          {status === "network_error" && (
+            <p id="login-error" role="alert" className="text-sm text-accent-red text-center">
+              Could not reach the server. Check your connection and try again.
             </p>
           )}
           {status === "success" && (
-            <p className="text-sm text-emerald-600 text-center">
-              Redirecting to private management system…
+            <p id="login-success" role="status" className="text-sm text-emerald-600 text-center">
+              Signed in — opening the management system…
             </p>
           )}
 
           <button
+            id="login-submit"
             type="submit"
-            disabled={status === "loading"}
+            disabled={status === "loading" || status === "success"}
             className="w-full bg-brand-dark hover:bg-brand-dark/90 text-white font-display text-lg px-6 py-3 rounded-2xl shadow transition-colors disabled:opacity-70 inline-flex items-center justify-center gap-2"
           >
-            {status === "loading" && <Loader2 size={18} className="animate-spin" />}
-            Login
+            {status === "loading" && (
+              <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+            )}
+            {status === "success" ? "Signing in…" : "Log In"}
           </button>
         </form>
 
@@ -133,7 +158,7 @@ function LoginPage() {
           to="/"
           className="mt-6 inline-flex items-center gap-1 text-sm text-brand hover:underline"
         >
-          <ArrowLeft size={14} /> Back to Home
+          <ArrowLeft size={14} aria-hidden="true" /> Back to Home
         </Link>
       </div>
     </div>
