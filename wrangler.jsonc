@@ -4,4 +4,25 @@
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/server.ts",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dccms-family-connect-local",
+      "database_id": "local-d1-database-id",
+      "preview_database_id": "DB",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "env": {
+    "production": {
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "dccms-family-connect-production",
+          "database_id": "production-d1-database-id",
+          "migrations_dir": "migrations",
+        },
+      ],
+    },
+  },
 }
