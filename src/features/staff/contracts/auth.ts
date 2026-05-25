@@ -26,7 +26,32 @@ export const authDetailsSchema = z.object({
   offlinePinEnrolled: z.boolean(),
 });
 
+export const loginRequestSchema = z.object({
+  username: trimmedRequiredText("Username"),
+  password: trimmedRequiredText("Password"),
+});
+
+export const createStaffUserRequestSchema = z.object({
+  username: trimmedRequiredText("Username"),
+  displayName: trimmedRequiredText("Display name"),
+  role: sessionRoleSchema,
+  password: trimmedRequiredText("Password"),
+});
+
+export const deviceActivateRequestSchema = z.object({
+  deviceId: trimmedRequiredText("Device ID"),
+  deviceName: trimmedRequiredText("Device name"),
+});
+
+export const deviceDeactivateRequestSchema = z.object({
+  deviceId: trimmedRequiredText("Device ID"),
+});
+
 export type SessionRole = z.infer<typeof sessionRoleSchema>;
 export type SessionUser = z.infer<typeof sessionUserSchema>;
 export type DeviceActivation = z.infer<typeof deviceActivationSchema>;
 export type AuthDetails = z.infer<typeof authDetailsSchema>;
+export type LoginRequest = z.infer<typeof loginRequestSchema>;
+export type CreateStaffUserRequest = z.infer<typeof createStaffUserRequestSchema>;
+export type DeviceActivateRequest = z.infer<typeof deviceActivateRequestSchema>;
+export type DeviceDeactivateRequest = z.infer<typeof deviceDeactivateRequestSchema>;

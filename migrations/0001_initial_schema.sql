@@ -131,14 +131,12 @@ CREATE INDEX IF NOT EXISTS sync_operations_device_time_idx
 
 CREATE TABLE IF NOT EXISTS audit_events (
   id TEXT PRIMARY KEY,
-  actor_user_id TEXT,
+  timestamp TEXT NOT NULL,
+  actor_id TEXT,
   event_type TEXT NOT NULL,
-  target_type TEXT NOT NULL,
-  target_id TEXT,
-  details_json TEXT,
-  occurred_at TEXT NOT NULL,
-  FOREIGN KEY (actor_user_id) REFERENCES staff_users (id)
+  metadata TEXT NOT NULL,
+  FOREIGN KEY (actor_id) REFERENCES staff_users (id)
 );
 
 CREATE INDEX IF NOT EXISTS audit_events_occurred_at_idx
-  ON audit_events (occurred_at DESC);
+  ON audit_events (timestamp DESC);

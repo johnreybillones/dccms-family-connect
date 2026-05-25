@@ -16,6 +16,14 @@ import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StaffIndexRouteImport } from './routes/staff/index'
+import { Route as ApiAuthSessionRouteImport } from './routes/api/auth/session'
+import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
+import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
+import { Route as ApiAdminStaffUsersRouteImport } from './routes/api/admin/staff-users'
+import { Route as ApiAdminAuditEventsRouteImport } from './routes/api/admin/audit-events'
+import { Route as ApiStaffDeviceDeactivateRouteImport } from './routes/api/staff/device/deactivate'
+import { Route as ApiStaffDeviceActivateRouteImport } from './routes/api/staff/device/activate'
+import { Route as ApiAdminStaffUsersUserIdDeactivateRouteImport } from './routes/api/admin/staff-users/$userId/deactivate'
 
 const StaffRoute = StaffRouteImport.update({
   id: '/staff',
@@ -52,6 +60,48 @@ const StaffIndexRoute = StaffIndexRouteImport.update({
   path: '/',
   getParentRoute: () => StaffRoute,
 } as any)
+const ApiAuthSessionRoute = ApiAuthSessionRouteImport.update({
+  id: '/api/auth/session',
+  path: '/api/auth/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthLogoutRoute = ApiAuthLogoutRouteImport.update({
+  id: '/api/auth/logout',
+  path: '/api/auth/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthLoginRoute = ApiAuthLoginRouteImport.update({
+  id: '/api/auth/login',
+  path: '/api/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminStaffUsersRoute = ApiAdminStaffUsersRouteImport.update({
+  id: '/api/admin/staff-users',
+  path: '/api/admin/staff-users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminAuditEventsRoute = ApiAdminAuditEventsRouteImport.update({
+  id: '/api/admin/audit-events',
+  path: '/api/admin/audit-events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStaffDeviceDeactivateRoute =
+  ApiStaffDeviceDeactivateRouteImport.update({
+    id: '/api/staff/device/deactivate',
+    path: '/api/staff/device/deactivate',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiStaffDeviceActivateRoute = ApiStaffDeviceActivateRouteImport.update({
+  id: '/api/staff/device/activate',
+  path: '/api/staff/device/activate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminStaffUsersUserIdDeactivateRoute =
+  ApiAdminStaffUsersUserIdDeactivateRouteImport.update({
+    id: '/$userId/deactivate',
+    path: '/$userId/deactivate',
+    getParentRoute: () => ApiAdminStaffUsersRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +111,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/staff': typeof StaffRouteWithChildren
   '/staff/': typeof StaffIndexRoute
+  '/api/admin/audit-events': typeof ApiAdminAuditEventsRoute
+  '/api/admin/staff-users': typeof ApiAdminStaffUsersRouteWithChildren
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/staff/device/activate': typeof ApiStaffDeviceActivateRoute
+  '/api/staff/device/deactivate': typeof ApiStaffDeviceDeactivateRoute
+  '/api/admin/staff-users/$userId/deactivate': typeof ApiAdminStaffUsersUserIdDeactivateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,6 +127,14 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/staff': typeof StaffIndexRoute
+  '/api/admin/audit-events': typeof ApiAdminAuditEventsRoute
+  '/api/admin/staff-users': typeof ApiAdminStaffUsersRouteWithChildren
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/staff/device/activate': typeof ApiStaffDeviceActivateRoute
+  '/api/staff/device/deactivate': typeof ApiStaffDeviceDeactivateRoute
+  '/api/admin/staff-users/$userId/deactivate': typeof ApiAdminStaffUsersUserIdDeactivateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,6 +145,14 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/staff': typeof StaffRouteWithChildren
   '/staff/': typeof StaffIndexRoute
+  '/api/admin/audit-events': typeof ApiAdminAuditEventsRoute
+  '/api/admin/staff-users': typeof ApiAdminStaffUsersRouteWithChildren
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/staff/device/activate': typeof ApiStaffDeviceActivateRoute
+  '/api/staff/device/deactivate': typeof ApiStaffDeviceDeactivateRoute
+  '/api/admin/staff-users/$userId/deactivate': typeof ApiAdminStaffUsersUserIdDeactivateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,8 +164,30 @@ export interface FileRouteTypes {
     | '/login'
     | '/staff'
     | '/staff/'
+    | '/api/admin/audit-events'
+    | '/api/admin/staff-users'
+    | '/api/auth/login'
+    | '/api/auth/logout'
+    | '/api/auth/session'
+    | '/api/staff/device/activate'
+    | '/api/staff/device/deactivate'
+    | '/api/admin/staff-users/$userId/deactivate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/announcements' | '/contact' | '/login' | '/staff'
+  to:
+    | '/'
+    | '/about'
+    | '/announcements'
+    | '/contact'
+    | '/login'
+    | '/staff'
+    | '/api/admin/audit-events'
+    | '/api/admin/staff-users'
+    | '/api/auth/login'
+    | '/api/auth/logout'
+    | '/api/auth/session'
+    | '/api/staff/device/activate'
+    | '/api/staff/device/deactivate'
+    | '/api/admin/staff-users/$userId/deactivate'
   id:
     | '__root__'
     | '/'
@@ -101,6 +197,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/staff'
     | '/staff/'
+    | '/api/admin/audit-events'
+    | '/api/admin/staff-users'
+    | '/api/auth/login'
+    | '/api/auth/logout'
+    | '/api/auth/session'
+    | '/api/staff/device/activate'
+    | '/api/staff/device/deactivate'
+    | '/api/admin/staff-users/$userId/deactivate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -110,6 +214,13 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   LoginRoute: typeof LoginRoute
   StaffRoute: typeof StaffRouteWithChildren
+  ApiAdminAuditEventsRoute: typeof ApiAdminAuditEventsRoute
+  ApiAdminStaffUsersRoute: typeof ApiAdminStaffUsersRouteWithChildren
+  ApiAuthLoginRoute: typeof ApiAuthLoginRoute
+  ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
+  ApiAuthSessionRoute: typeof ApiAuthSessionRoute
+  ApiStaffDeviceActivateRoute: typeof ApiStaffDeviceActivateRoute
+  ApiStaffDeviceDeactivateRoute: typeof ApiStaffDeviceDeactivateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -163,6 +274,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaffIndexRouteImport
       parentRoute: typeof StaffRoute
     }
+    '/api/auth/session': {
+      id: '/api/auth/session'
+      path: '/api/auth/session'
+      fullPath: '/api/auth/session'
+      preLoaderRoute: typeof ApiAuthSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/logout': {
+      id: '/api/auth/logout'
+      path: '/api/auth/logout'
+      fullPath: '/api/auth/logout'
+      preLoaderRoute: typeof ApiAuthLogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/login': {
+      id: '/api/auth/login'
+      path: '/api/auth/login'
+      fullPath: '/api/auth/login'
+      preLoaderRoute: typeof ApiAuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/staff-users': {
+      id: '/api/admin/staff-users'
+      path: '/api/admin/staff-users'
+      fullPath: '/api/admin/staff-users'
+      preLoaderRoute: typeof ApiAdminStaffUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/audit-events': {
+      id: '/api/admin/audit-events'
+      path: '/api/admin/audit-events'
+      fullPath: '/api/admin/audit-events'
+      preLoaderRoute: typeof ApiAdminAuditEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/staff/device/deactivate': {
+      id: '/api/staff/device/deactivate'
+      path: '/api/staff/device/deactivate'
+      fullPath: '/api/staff/device/deactivate'
+      preLoaderRoute: typeof ApiStaffDeviceDeactivateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/staff/device/activate': {
+      id: '/api/staff/device/activate'
+      path: '/api/staff/device/activate'
+      fullPath: '/api/staff/device/activate'
+      preLoaderRoute: typeof ApiStaffDeviceActivateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/staff-users/$userId/deactivate': {
+      id: '/api/admin/staff-users/$userId/deactivate'
+      path: '/$userId/deactivate'
+      fullPath: '/api/admin/staff-users/$userId/deactivate'
+      preLoaderRoute: typeof ApiAdminStaffUsersUserIdDeactivateRouteImport
+      parentRoute: typeof ApiAdminStaffUsersRoute
+    }
   }
 }
 
@@ -176,6 +343,18 @@ const StaffRouteChildren: StaffRouteChildren = {
 
 const StaffRouteWithChildren = StaffRoute._addFileChildren(StaffRouteChildren)
 
+interface ApiAdminStaffUsersRouteChildren {
+  ApiAdminStaffUsersUserIdDeactivateRoute: typeof ApiAdminStaffUsersUserIdDeactivateRoute
+}
+
+const ApiAdminStaffUsersRouteChildren: ApiAdminStaffUsersRouteChildren = {
+  ApiAdminStaffUsersUserIdDeactivateRoute:
+    ApiAdminStaffUsersUserIdDeactivateRoute,
+}
+
+const ApiAdminStaffUsersRouteWithChildren =
+  ApiAdminStaffUsersRoute._addFileChildren(ApiAdminStaffUsersRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -183,6 +362,13 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   LoginRoute: LoginRoute,
   StaffRoute: StaffRouteWithChildren,
+  ApiAdminAuditEventsRoute: ApiAdminAuditEventsRoute,
+  ApiAdminStaffUsersRoute: ApiAdminStaffUsersRouteWithChildren,
+  ApiAuthLoginRoute: ApiAuthLoginRoute,
+  ApiAuthLogoutRoute: ApiAuthLogoutRoute,
+  ApiAuthSessionRoute: ApiAuthSessionRoute,
+  ApiStaffDeviceActivateRoute: ApiStaffDeviceActivateRoute,
+  ApiStaffDeviceDeactivateRoute: ApiStaffDeviceDeactivateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
