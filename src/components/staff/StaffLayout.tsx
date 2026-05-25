@@ -354,6 +354,20 @@ export function StaffLayout() {
       if (cancelled) return;
 
       if (!session.authenticated) {
+        // If offline and have a cached local session, restore it instead of logging out
+        const cachedUser =
+          typeof window !== "undefined" ? localStorage.getItem("dccms-session-user") : null;
+        if (!navigator.onLine && cachedUser) {
+          try {
+            const u = JSON.parse(cachedUser);
+            setSession(u);
+            setIsAuthorizing(false);
+            return;
+          } catch {
+            // Safe to ignore if cached JSON is malformed
+          }
+        }
+
         clearSession();
         navigate({ to: "/login", replace: true });
         return;

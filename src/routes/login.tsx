@@ -40,12 +40,26 @@ function LoginPage() {
     let cancelled = false;
 
     async function hydrateSession() {
-      if (getSession()) return;
+      if (getSession()) {
+        navigate({ to: "/staff", replace: true });
+        return;
+      }
 
       const session = await fetchSession();
       if (!cancelled && session.authenticated) {
         setSession(session.details.user);
         navigate({ to: "/staff", replace: true });
+      } else if (!cancelled && !navigator.onLine) {
+        const cached = localStorage.getItem("dccms-session-user");
+        if (cached) {
+          try {
+            const u = JSON.parse(cached);
+            setSession(u);
+            navigate({ to: "/staff", replace: true });
+          } catch {
+            // Ignore malformed cache
+          }
+        }
       }
     }
 

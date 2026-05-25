@@ -85,14 +85,13 @@ For docs-only changes, verify paths, links, and Markdown readability.
 
 ## Test Login Credentials
 
-| Username | Role | Password | Display Name |
-| :--- | :--- | :--- | :--- |
-| **`admin`** | `administrator` | `CorrectPassword!2026` | Administrator |
-| **`admin2`** | `administrator` | `AdminPassword2!2026` | Administrator II |
-| **`admin3`** | `administrator` | `AdminPassword3!2026` | Administrator III |
-| **`staff`** | `staff` | `StaffPassword!2026` | Staff |
-| **`staff2`** | `staff` | `StaffPassword2!2026` | Staff User II |
-| **`staff3`** | `staff` | `StaffPassword3!2026` | Staff User III |
+| Username     | Role            | Password               | Display Name      |
+| :----------- | :-------------- | :--------------------- | :---------------- |
+| **`admin`**  | `administrator` | `CorrectPassword!2026` | Administrator     |
+| **`admin2`** | `administrator` | `AdminPassword2!2026`  | Administrator II  |
+| **`admin3`** | `administrator` | `AdminPassword3!2026`  | Administrator III |
+| **`staff`**  | `staff`         | `StaffPassword!2026`   | Staff             |
+| **`staff2`** | `staff`         | `StaffPassword2!2026`  | Staff User II     |
+| **`staff3`** | `staff`         | `StaffPassword3!2026`  | Staff User III    |
 
-*All accounts use 100,000 iteration hashes for Cloudflare Workers compatibility.*
-
+_All accounts use 100,000 iteration hashes for Cloudflare Workers compatibility._

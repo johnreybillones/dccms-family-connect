@@ -77,6 +77,11 @@ export async function bootstrapFromServer(): Promise<void> {
       { credentials: "same-origin", cache: "no-store" },
     );
 
+    if (res.status === 401) {
+      setStatus("reauth_required");
+      return;
+    }
+
     if (!res.ok) {
       setStatus("sync_failed");
       return;
@@ -92,7 +97,7 @@ export async function bootstrapFromServer(): Promise<void> {
     await updateSyncMeta({ lastSyncedAt: data.syncedAt, pendingOperationCount: 0 });
     setStatus("synced");
   } catch {
-    setStatus("sync_failed");
+    setStatus(navigator.onLine ? "sync_failed" : "offline");
   }
 }
 
@@ -154,7 +159,7 @@ export async function syncToServer(): Promise<void> {
     await updateSyncMeta({ lastSyncedAt: data.syncedAt, pendingOperationCount: remaining });
     setStatus(remaining > 0 ? "saved_locally" : "synced");
   } catch {
-    setStatus("sync_failed");
+    setStatus(navigator.onLine ? "sync_failed" : "offline");
   }
 }
 

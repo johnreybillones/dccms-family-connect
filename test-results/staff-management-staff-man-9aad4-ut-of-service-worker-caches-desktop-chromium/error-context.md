@@ -12,63 +12,60 @@
 # Error details
 
 ```
-Error: expect(locator).toBeVisible() failed
+Test timeout of 30000ms exceeded.
+```
 
-Locator: getByRole('link', { name: 'Staff Login' }).first()
-Expected: visible
-Timeout: 5000ms
-Error: element(s) not found
+```
+Error: page.waitForEvent: Test timeout of 30000ms exceeded.
+=========================== logs ===========================
+waiting for event "download"
+============================================================
+```
 
-Call log:
-  - Expect "toBeVisible" with timeout 5000ms
-  - waiting for getByRole('link', { name: 'Staff Login' }).first()
+# Page snapshot
 
+```yaml
+- generic [ref=e3]:
+    - generic [ref=e4]:
+        - img "Barangay seal" [ref=e5]
+        - heading "Staff Login" [level=1] [ref=e6]
+        - paragraph [ref=e7]: Barangay San Antonio de Padua I Day Care Center — for authorized personnel only
+    - generic [ref=e8]: Authorized use only. Do not share your credentials. All activity may be logged.
+    - generic [ref=e9]:
+        - generic [ref=e10]:
+            - generic [ref=e11]: Username
+            - textbox "Username" [ref=e12]
+        - generic [ref=e13]:
+            - generic [ref=e14]: Password
+            - generic [ref=e15]:
+                - textbox "Password" [ref=e16]
+                - button "Show password" [ref=e17]:
+                    - img [ref=e18]
+        - button "Log In" [ref=e21]
+    - link "Back to Home" [ref=e22] [cursor=pointer]:
+        - /url: /
+        - img [ref=e23]
+        - text: Back to Home
 ```
 
 # Test source
 
 ```ts
-  373 | 
-  374 |     const [pdfDownload] = await Promise.all([
-  375 |       page.waitForEvent("download"),
-  376 |       page.getByRole("button", { name: "Export PDF Document" }).click(),
-  377 |     ]);
-  378 |     expect(pdfDownload.suggestedFilename()).toMatch(/\.pdf$/);
-  379 |     await expect(page.getByText(/Successfully generated .*\.pdf/i)).toBeVisible();
-  380 | 
-  381 |     const [xlsxDownload] = await Promise.all([
-  382 |       page.waitForEvent("download"),
-  383 |       page.getByRole("button", { name: "Export XLSX Spreadsheet" }).click(),
-  384 |     ]);
-  385 |     expect(xlsxDownload.suggestedFilename()).toMatch(/\.xlsx$/);
-  386 |     await expect(page.getByText(/Successfully generated .*\.xlsx/i)).toBeVisible();
-  387 | 
-  388 |     await expect.poll(async () => getStoreRecordCount(page, "operation_queue")).toBeGreaterThan(0);
-  389 | 
-  390 |     await context.setOffline(false);
-  391 |     await expect
-  392 |       .poll(async () => syncRequests.length, {
-  393 |         timeout: 15000,
-  394 |       })
-  395 |       .toBeGreaterThan(0);
-  396 | 
-  397 |     const lastSyncRequest = syncRequests.at(-1);
-  398 |     const operations = Array.isArray(lastSyncRequest?.operations)
   399 |       ? (lastSyncRequest.operations as Array<Record<string, unknown>>)
   400 |       : [];
   401 |     expect(operations.map((operation) => operation.kind)).toEqual(
   402 |       expect.arrayContaining(["createProfile", "upsertAttendance", "recordExportAudit"]),
   403 |     );
-  404 | 
+  404 |
   405 |     await expect.poll(async () => getStoreRecordCount(page, "operation_queue")).toBe(0);
   406 |     await expect(
   407 |       page.getByRole("button", { name: /Sync status: All changes synced/i }).first(),
   408 |     ).toBeVisible();
   409 |   });
-  410 | 
+  410 |
   411 |   test.describe("service worker cache guard", () => {
   412 |     test.use({ serviceWorkers: "allow" });
-  413 | 
+  413 |
   414 |     test("keeps api responses and generated report files out of service worker caches", async ({
   415 |       page,
   416 |     }) => {
@@ -83,7 +80,7 @@ Call log:
   425 |           });
   426 |           return;
   427 |         }
-  428 | 
+  428 |
   429 |         await route.fulfill({
   430 |           status: 200,
   431 |           contentType: "application/json",
@@ -126,10 +123,9 @@ Call log:
   468 |           }),
   469 |         });
   470 |       });
-  471 | 
+  471 |
   472 |       await page.goto("/").catch(() => {});
-> 473 |       await expect(page.getByRole("link", { name: "Staff Login" }).first()).toBeVisible();
-      |                                                                             ^ Error: expect(locator).toBeVisible() failed
+  473 |       await expect(page.getByRole("link", { name: "Staff Login" }).first()).toBeVisible();
   474 |       await page.getByRole("link", { name: "Staff Login" }).first().click();
   475 |       await page.locator("#login-username").fill(STAFF_USER.username);
   476 |       await page.locator("#login-password").fill("CorrectPassword!2026");
@@ -138,7 +134,7 @@ Call log:
   479 |       await expect
   480 |         .poll(async () => page.evaluate(() => navigator.serviceWorker.ready.then(() => true)))
   481 |         .toBe(true);
-  482 | 
+  482 |
   483 |       await page.getByRole("link", { name: "Student Records" }).first().click();
   484 |       await page.getByRole("button", { name: /Add student/i }).click();
   485 |       await page.locator("#childFirstName").fill("Cache");
@@ -152,14 +148,15 @@ Call log:
   493 |       await page.locator("#tab-enrollment").click();
   494 |       await expect(page.locator("#enrollmentDate")).toBeVisible();
   495 |       await page.locator("#form-submit").click();
-  496 | 
+  496 |
   497 |       await page.goto("/staff/reports");
   498 |       const [pdfDownload] = await Promise.all([
-  499 |         page.waitForEvent("download"),
+> 499 |         page.waitForEvent("download"),
+      |              ^ Error: page.waitForEvent: Test timeout of 30000ms exceeded.
   500 |         page.getByRole("button", { name: "Export PDF Document" }).click(),
   501 |       ]);
   502 |       const pdfFileName = pdfDownload.suggestedFilename();
-  503 | 
+  503 |
   504 |       const cachedUrls = await getCachedUrls(page);
   505 |       expect(cachedUrls.some((url) => url.includes("/api/"))).toBe(false);
   506 |       expect(cachedUrls.some((url) => url.includes(pdfFileName))).toBe(false);
@@ -167,5 +164,5 @@ Call log:
   508 |     });
   509 |   });
   510 | });
-  511 | 
+  511 |
 ```

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -73,17 +74,53 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "San Antonio De Padua 1 Day Care Center" },
-      { name: "description", content: "Day Care Center Management System & Family Connect portal for Barangay San Antonio de Padua I, Dasmariñas City, Cavite." },
+      {
+        name: "description",
+        content:
+          "Day Care Center Management System & Family Connect portal for Barangay San Antonio de Padua I, Dasmariñas City, Cavite.",
+      },
       { name: "author", content: "DCCMS" },
       { property: "og:title", content: "San Antonio De Padua 1 Day Care Center" },
-      { property: "og:description", content: "Day Care Center Management System & Family Connect portal for Barangay San Antonio de Padua I, Dasmariñas City, Cavite." },
+      {
+        property: "og:description",
+        content:
+          "Day Care Center Management System & Family Connect portal for Barangay San Antonio de Padua I, Dasmariñas City, Cavite.",
+      },
+      {
+        property: "og:image",
+        content: "https://dccms.johnreybillones17.workers.dev/icons/pwa-512x512.png",
+      },
+      { property: "og:image:width", content: "512" },
+      { property: "og:image:height", content: "512" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "twitter:image",
+        content: "https://dccms.johnreybillones17.workers.dev/icons/pwa-512x512.png",
+      },
+      // PWA & mobile meta tags
+      { name: "theme-color", content: "#4f46e5" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "DCCMS Staff" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        href: "/icons/pwa-192x192.png",
+      },
+      {
+        rel: "manifest",
+        href: "/manifest.webmanifest",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "/icons/apple-touch-icon.png",
       },
     ],
   }),
@@ -107,12 +144,34 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+import { PwaInstallPrompt } from "@/components/PwaInstallPrompt";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+      // In production, we register our injectManifest service worker
+      const isProd = import.meta.env.PROD;
+      if (isProd) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then((reg) => {
+              console.log("Service Worker registered successfully with scope:", reg.scope);
+            })
+            .catch((err) => {
+              console.error("Service Worker registration failed:", err);
+            });
+        });
+      }
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <PwaInstallPrompt />
     </QueryClientProvider>
   );
 }

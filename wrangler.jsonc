@@ -1,28 +1,26 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "dccms",
-	"compatibility_date": "2025-09-24",
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
-	"main": "src/server.ts",
-	"workers_dev": true,
-	"routes": [
-		{
-			"pattern": "sadp1-daycare.me",
-			"custom_domain": true
-		},
-		{
-			"pattern": "www.sadp1-daycare.me",
-			"custom_domain": true
-		}
-	],
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "dccms-family-connect-production",
-			"database_id": "67886a8c-7cce-43a2-8cf2-38683e6836b8",
-			"migrations_dir": "migrations"
-		}
-	]
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dccms",
+  "compatibility_date": "2025-09-24",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "src/server.ts",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "sadp1-daycare.me",
+      "custom_domain": true,
+    },
+    {
+      "pattern": "www.sadp1-daycare.me",
+      "custom_domain": true,
+    },
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dccms-family-connect-production",
+      "database_id": "67886a8c-7cce-43a2-8cf2-38683e6836b8",
+      "migrations_dir": "migrations",
+    },
+  ],
 }

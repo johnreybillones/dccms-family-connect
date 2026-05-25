@@ -15,7 +15,20 @@ import type { SessionUser } from "@/features/staff/contracts/auth";
 // Internal state
 // ---------------------------------------------------------------------------
 
-let _session: SessionUser | null = null;
+const LOCAL_STORAGE_KEY = "dccms-session-user";
+
+let _session: SessionUser | null = (() => {
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  }
+  return null;
+})();
+
 const _listeners = new Set<() => void>();
 
 // ---------------------------------------------------------------------------
@@ -33,6 +46,17 @@ export function getSession(): SessionUser | null {
  */
 export function setSession(user: SessionUser | null): void {
   _session = user;
+  if (typeof window !== "undefined") {
+    try {
+      if (user) {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(user));
+      } else {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+      }
+    } catch (e) {
+      console.error("Failed to cache session locally", e);
+    }
+  }
   _listeners.forEach((fn) => fn());
 }
 
