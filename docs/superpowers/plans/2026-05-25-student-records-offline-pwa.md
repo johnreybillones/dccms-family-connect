@@ -263,7 +263,7 @@ git commit -m "docs: align v1 scope with records attendance and reports"
 - Test: `src/features/staff/contracts/sync.test.ts`
 
 - [ ] Add Vitest and testing-library dependencies/scripts needed for shared unit tests; do not add
-      React/Vite/Tailwind plugins already managed by `@lovable.dev/vite-tanstack-config`.
+      React/Vite/Tailwind duplicate plugins.
 - [ ] Write failing contract tests for enrollment validation, attendance validation, role parsing,
       report types/formats, export audit metadata, and sync operation variants.
 - [ ] Run contract tests and verify they fail because schemas do not exist yet.

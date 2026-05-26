@@ -19,7 +19,7 @@ npm run preview    # Inspect the production build locally
 ## Stack
 
 React 19 + TypeScript, TanStack Start + TanStack Router file routes, TanStack Query, Tailwind CSS
-v4, shadcn/ui with Radix UI and Lucide, Vite 7 via `@lovable.dev/vite-tanstack-config`,
+v4, shadcn/ui with Radix UI and Lucide, Vite 7,
 Cloudflare Workers via `src/server.ts` and `wrangler.jsonc`, plus React Hook Form and Zod.
 
 ## Source Layout
@@ -45,7 +45,7 @@ src/
 | Rule                                   | Why                                                                                                                                                              |
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Never hand-edit `src/routeTree.gen.ts` | Route generation overwrites manual edits                                                                                                                         |
-| Never add duplicate Vite plugins       | `@lovable.dev/vite-tanstack-config` already includes React, Tailwind, Cloudflare, tsconfig paths, TanStack Start, and related wiring; duplicates break the build |
+| Never add duplicate Vite plugins       | Vite plugins are already configured in `vite.config.ts` (React, Tailwind, Cloudflare, tsconfig paths, TanStack Start); adding duplicate plugins breaks the build |
 | Use TanStack Router APIs only          | Do not introduce React Router patterns such as `BrowserRouter`, `Routes`, `Route`, or `react-router-dom` navigation                                              |
 | Never import `server-only`             | Use TanStack Start server-only conventions such as `*.server.ts`                                                                                                 |
 | Never invent official details          | Contact info, Messenger URLs, hours, faculty names, and similar org details must stay placeholders until the user provides real values                           |

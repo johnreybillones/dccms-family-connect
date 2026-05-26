@@ -25,7 +25,7 @@ Do not use subagents unless the user explicitly asks for parallel agent work.
 
 Keep edits scoped to the request. Do not rewrite generated router output unless the task is
 about route generation. Do not add React Router APIs; this app uses TanStack Router. Do not add
-duplicate Vite plugins already included by `@lovable.dev/vite-tanstack-config`.
+duplicate Vite plugins already configured in `vite.config.ts`.
 
 Preserve explicit placeholders for unknown official details. Ask the user for exact values before
 turning placeholders into public-facing claims.

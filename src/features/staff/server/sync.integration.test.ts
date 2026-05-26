@@ -130,6 +130,13 @@ describe("staff bootstrap and sync API", () => {
       }),
     );
     expect(database.syncOperations).toHaveLength(3);
+    expect(database.syncOperations[0]).toMatchObject({
+      deviceId: "device-001",
+      userId: "staff-1",
+      operationId: operations[0].operationId,
+      processedAt: expect.any(String),
+    });
+    expect(JSON.parse(database.syncOperations[0].payloadJson)).toEqual(operations[0]);
     expect(database.auditEvents.map((event) => event.eventType)).toEqual(
       expect.arrayContaining([
         "staff.profile.created",

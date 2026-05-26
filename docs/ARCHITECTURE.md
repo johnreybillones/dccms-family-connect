@@ -25,8 +25,7 @@ The codebase must preserve these product boundaries:
 ## Current Stack
 
 The app uses TanStack Start, TanStack Router file routes, React 19, TypeScript, Tailwind CSS v4,
-and Vite 7. Build wiring comes from `@lovable.dev/vite-tanstack-config`; do not manually add
-duplicate React, Tailwind, Cloudflare, TanStack Start, or tsconfig-path plugins.
+and Vite 7. The build configuration is standard Vite and uses official community plugins.
 
 Cloudflare deployment support is represented by `wrangler.jsonc` and `src/server.ts`. The server
 entry wraps TanStack Start's server handler and normalizes catastrophic SSR failures into the

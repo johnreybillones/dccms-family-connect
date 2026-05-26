@@ -132,9 +132,8 @@ export async function processSyncRequest(
       });
       await insertSyncOperation(tx, {
         deviceId: options.deviceId,
-        operationId: operation.operationId,
-        kind: operation.kind,
-        clientRecordedAt: operation.clientRecordedAt,
+        userId: options.userId,
+        operation,
         receivedAt: receivedAt.toISOString(),
       });
       acknowledgedOperationIds.push(operation.operationId);
@@ -357,22 +356,23 @@ async function insertSyncOperation(
   database: D1DatabaseLike,
   operation: {
     deviceId: string;
-    operationId: string;
-    kind: SyncOperation["kind"];
-    clientRecordedAt: string;
+    userId: string;
+    operation: SyncOperation;
     receivedAt: string;
   },
 ): Promise<void> {
   await database
     .prepare(
-      "INSERT INTO sync_operations (id, device_id, operation_id, kind, client_recorded_at, received_at) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO sync_operations (operation_id, device_id, user_id, kind, payload_json, client_recorded_at, received_at, processed_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(
-      crypto.randomUUID(),
+      operation.operation.operationId,
       operation.deviceId,
-      operation.operationId,
-      operation.kind,
-      operation.clientRecordedAt,
+      operation.userId,
+      operation.operation.kind,
+      JSON.stringify(operation.operation),
+      operation.operation.clientRecordedAt,
+      operation.receivedAt,
       operation.receivedAt,
     )
     .run();

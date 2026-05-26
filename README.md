@@ -24,7 +24,7 @@ clear requirement.
 - React 19 and TypeScript
 - TanStack Start and TanStack Router file routes
 - TanStack Query provider at the root route
-- Vite through `@lovable.dev/vite-tanstack-config`
+- Vite 7 standard build system
 - Tailwind CSS v4 tokens in `src/styles.css`
 - Cloudflare Worker entry wrapper in `src/server.ts`
 
@@ -73,6 +73,6 @@ npm run format
 ## Notes for Contributors
 
 Do not hand-edit `src/routeTree.gen.ts` unless intentionally resolving generated router output.
-Do not add duplicate Vite plugins already provided by `@lovable.dev/vite-tanstack-config`.
+Do not add duplicate Vite plugins already configured in `vite.config.ts`.
 Keep placeholders explicit when official contact details, Messenger links, or production login
 behavior are not yet provided.

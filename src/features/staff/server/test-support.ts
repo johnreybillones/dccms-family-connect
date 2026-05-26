@@ -69,12 +69,14 @@ export type StoredAttendanceRecord = {
 };
 
 export type StoredSyncOperation = {
-  id: string;
-  deviceId: string;
   operationId: string;
+  deviceId: string;
+  userId: string;
   kind: string;
+  payloadJson: string;
   clientRecordedAt: string;
   receivedAt: string;
+  processedAt: string;
 };
 
 export type StoredDeviceSyncState = {
@@ -549,23 +551,27 @@ class MemoryD1Statement {
 
     if (
       this.query ===
-      "INSERT INTO sync_operations (id, device_id, operation_id, kind, client_recorded_at, received_at) VALUES (?, ?, ?, ?, ?, ?)"
+      "INSERT INTO sync_operations (operation_id, device_id, user_id, kind, payload_json, client_recorded_at, received_at, processed_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
     ) {
-      const [id, deviceId, operationId, kind, clientRecordedAt, receivedAt] = this.params as [
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-      ];
-      this.database.syncOperations.push({
-        id,
-        deviceId,
+      const [
         operationId,
+        deviceId,
+        userId,
         kind,
+        payloadJson,
         clientRecordedAt,
         receivedAt,
+        processedAt,
+      ] = this.params as [string, string, string, string, string, string, string, string];
+      this.database.syncOperations.push({
+        operationId,
+        deviceId,
+        userId,
+        kind,
+        payloadJson,
+        clientRecordedAt,
+        receivedAt,
+        processedAt,
       });
       return { meta: { changes: 1 } };
     }

@@ -82,6 +82,16 @@ export async function bootstrapFromServer(): Promise<void> {
       return;
     }
 
+    if (res.status === 403) {
+      // Clear local activation metadata so user is forced to re-activate the device
+      const { activationStore } = await import("./staff-db");
+      await activationStore.clear();
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
+      return;
+    }
+
     if (!res.ok) {
       setStatus("sync_failed");
       return;
@@ -139,6 +149,15 @@ export async function syncToServer(): Promise<void> {
       setStatus("reauth_required");
       return;
     }
+    if (res.status === 403) {
+      // Clear local activation metadata so user is forced to re-activate the device
+      const { activationStore } = await import("./staff-db");
+      await activationStore.clear();
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
+      return;
+    }
     if (!res.ok) {
       setStatus("sync_failed");
       return;
@@ -178,8 +197,20 @@ export function startNetworkMonitor(): () => void {
   window.addEventListener("online", onOnline);
   window.addEventListener("offline", onOffline);
 
-  // Set initial status
-  setStatus(navigator.onLine ? "saved_locally" : "offline");
+  // Set initial status asynchronously to avoid showing confusing 'saved_locally' status
+  if (!navigator.onLine) {
+    setStatus("offline");
+  } else {
+    loadAllQueuedOperations()
+      .then((ops) => {
+        if (_status === "offline") return;
+        setStatus(ops.length > 0 ? "saved_locally" : "synced");
+      })
+      .catch(() => {
+        if (_status === "offline") return;
+        setStatus(navigator.onLine ? "sync_failed" : "offline");
+      });
+  }
 
   return () => {
     window.removeEventListener("online", onOnline);
